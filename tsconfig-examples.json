@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "removeComments": true,
+    "strictNullChecks":true,
+    "strict": true,
+    "target": "esnext",
+    "module": "esnext",
+    "outDir": "build",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": [
+      "dom",
+      "es2021",
+    ]
+  },
+  "include": [
+    "./src",
+    "./examples"
+  ],
+  "exclude": [
+    "node_modules",
+    "./src/**/*.test.ts",
+    "./src/testUtils"
+  ]
+}

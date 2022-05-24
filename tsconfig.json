@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "removeComments": true,
+    "strictNullChecks":true,
+    "strict": true,
+    "target": "esnext",
+    "module": "esnext",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "types",
+    "outDir": "build",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": [
+      "dom",
+      "es2021",
+    ],
+    "typeRoots": ["./node_modules/@types", "./src/@types"]
+  },
+  "include": [
+    "./src",
+  ],
+  "exclude": [
+    "node_modules",
+    "./src/**/*.test.ts",
+  ]
+}
