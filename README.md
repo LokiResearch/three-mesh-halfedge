@@ -1,7 +1,7 @@
 # three-mesh-halfedge
 
 [![build](https://github.com/minitoine/three-mesh-halfedge/workflows/build/badge.svg)](https://github.com/minitoine/three-mesh-halfedge/actions?query=workflow:"build")
-[![examples](https://github.com/minitoine/three-mesh-halfedge/workflows/build-examples/badge.svg)](https://github.com/minitoine/three-mesh-halfedge/actions?query=workflow:"build-examples")
+[![examples](https://github.com/minitoine/three-mesh-halfedge/workflows/examples-docs/badge.svg)](https://github.com/minitoine/three-mesh-halfedge/actions?query=workflow:"examples-docs")
 [![GitHub release](https://img.shields.io/github/release/minitoine/three-mesh-halfedge?include_prereleases=&sort=semver&color=blue)](https://github.com/minitoine/three-mesh-halfedge/releases/)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
