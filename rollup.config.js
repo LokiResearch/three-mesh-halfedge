@@ -45,7 +45,7 @@ for (const example of examples) {
   {
     input: `examples/${example}.ts`,
     output: {
-      file: `build-examples/examples/${example}.js`,
+      file: `build-examples/${example}.js`,
     },
     plugins: [
       commonjs(),
