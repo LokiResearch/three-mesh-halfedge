@@ -54,4 +54,4 @@ jobs:
       with:
         add: 'docs --force'
         message: 'Update docs'
-        push: 'origin HEAD:main --force'
+        push: 'origin HEAD:build --force'

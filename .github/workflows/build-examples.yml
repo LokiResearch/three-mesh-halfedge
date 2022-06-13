@@ -30,4 +30,4 @@ jobs:
       with:
         add: 'build-examples --force'
         message: 'Update examples'
-        push: 'origin HEAD:examples --force'
+        push: 'origin HEAD:build --force'
