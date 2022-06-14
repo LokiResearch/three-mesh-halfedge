@@ -18,7 +18,8 @@
   "module": "build/index.esm.js",
   "types": "build/types/index.d.ts",
   "files": [
-    "src/*"
+    "src/*",
+    "build/*"
   ],
   "dependencies": {
     "@types/three": "^0.138.0",
