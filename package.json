@@ -49,6 +49,6 @@
     "build-examples": "rollup -c --environment examples",
     "generate-docs": "typedoc src/index.ts",
     "lint": "eslint src examples",
-    "prepublishOnly": "npm run build"
+    "prepare": "npm run build"
   }
 }

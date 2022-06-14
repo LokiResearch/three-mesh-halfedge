@@ -154,7 +154,7 @@ export class HalfEdgeStructure {
  * @return     {Map}             { description_of_the_return_value }
  */
 
-function mergeVertexIndices(
+export function mergeVertexIndices(
     geometry: BufferGeometry,
     tolerance = 1e-4,
     hashNormals = false,
