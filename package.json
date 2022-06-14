@@ -43,7 +43,7 @@
     "typedoc": "^0.22.17",
     "typescript": "^4.6.2",
     "@types/three": "^0.138.0",
-    "three": "^0.138.0",
+    "three": "^0.138.0"
   },
   "scripts": {
     "test": "jest",
