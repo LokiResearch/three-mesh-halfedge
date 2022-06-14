@@ -127,7 +127,7 @@ describe("Cube: structure data integrity ", () => {
 
 });
 
-describe("<function> getMergedIndices", () => {
+describe("function getMergedIndices", () => {
 
   test("Expect position indices to be merged", () => {
     const array = new Int8Array([1,2,3,4,5,6,7,8,9,1,2,3,4,5,6]);

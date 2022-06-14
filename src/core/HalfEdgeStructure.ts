@@ -153,7 +153,8 @@ export class HalfEdgeStructure {
  * @param      {boolean}         [hashNormals=false]  The hash normals
  * @return     {Map}             { description_of_the_return_value }
  */
-export function mergeVertexIndices(
+
+function mergeVertexIndices(
     geometry: BufferGeometry,
     tolerance = 1e-4,
     hashNormals = false,
