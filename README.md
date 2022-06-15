@@ -1,19 +1,19 @@
 # three-mesh-halfedge
 
-[![build](https://github.com/minitoine/three-mesh-halfedge/workflows/build/badge.svg)](https://github.com/minitoine/three-mesh-halfedge/actions?query=workflow:"build")
-[![examples](https://github.com/minitoine/three-mesh-halfedge/workflows/examples-docs/badge.svg)](https://github.com/minitoine/three-mesh-halfedge/actions?query=workflow:"examples-docs")
-[![GitHub release](https://img.shields.io/github/release/minitoine/three-mesh-halfedge?include_prereleases=&sort=semver&color=blue)](https://github.com/minitoine/three-mesh-halfedge/releases/)
+[![build](https://github.com/LokiResearch/three-mesh-halfedge/workflows/build/badge.svg)](https://github.com/LokiResearch/three-mesh-halfedge/actions?query=workflow:"build")
+[![examples](https://github.com/LokiResearch/three-mesh-halfedge/workflows/examples-docs/badge.svg)](https://github.com/LokiResearch/three-mesh-halfedge/actions?query=workflow:"examples-docs")
+[![GitHub release](https://img.shields.io/github/release/LokiResearch/three-mesh-halfedge?include_prereleases=&sort=semver&color=blue)](https://github.com/LokiResearch/three-mesh-halfedge/releases/)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
 A typescript implementation of the HalfEdge structure for three.js geometries.
 
 ## Examples
 
-- Realtime silhouette and boundary edges extraction [![sssss](https://img.shields.io/badge/open-green)](https://minitoine.github.io/three-mesh-halfedge/build-examples/ExtractSilhouette.html)
+- Realtime silhouette and boundary edges extraction [![sssss](https://img.shields.io/badge/open-green)](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractSilhouette.html)
 
 ## Documentation
 
-[![Open - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://minitoine.github.io/three-mesh-halfedge/docs/index.html)
+[![Open - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://LokiResearch.github.io/three-mesh-halfedge/docs/index.html)
 
 *Documentation is in progress.*
 
