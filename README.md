@@ -9,7 +9,7 @@ A typescript implementation of the HalfEdge structure for three.js geometries.
 
 ## Examples
 
-- Realtime silhouette and boundary edges extraction [![sssss](https://img.shields.io/badge/open-green)](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractSilhouette.html)
+- Realtime silhouette and boundary edges extraction [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractSilhouette.html)
 
 ## Documentation
 
