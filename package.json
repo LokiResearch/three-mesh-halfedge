@@ -29,6 +29,7 @@
     "dev-examples": "rollup -cw --environment examples",
     "test": "jest",
     "lint": "eslint src examples",
+    "lint-examples": "eslint examples",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
