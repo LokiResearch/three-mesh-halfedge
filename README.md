@@ -18,58 +18,54 @@ A typescript implementation of the Halfedge structure for three.js geometries.
 
 *Documentation is in progress.*
 
-## Use
+## Code snippets
 
-##### Build the structure
-```javascript
+##### Example 1: Build the Halfedge structure
+```ts
 import * as THREE from 'three';
-import { HalfEdge } from 'three-mesh-halfedge';
+import { HalfedgeDS } from 'three-mesh-halfedge';
 
+// Build the Halfedge structure from a BoxGeometry
 const geometry = new THREE.BoxGeometry();
-const HEStructure = new HalfEdgeStructure(geometry, {
-    hashNormals: true,
-    tolerance: 1e-4,
+const struct = new HalfedgeDS({
+	tolerance: 1e-10,
 });
-HEStructure.build();
+struct.buildFromGeometry(geometry);
 ```
 
-##### Example 1: Get the boundary HalfEdges of a mesh
-```javascript
-// Let's admit we have a mesh
+##### Example 2: Extract the boundary halfedges of a mesh
+```ts
+const struct = new HalfedgeDS();
+struct.buildFromGeometry(mesh.geometry);
 
-// Build the HalfEdge structure
-const HEStructure = new HalfEdgeStructure(mesh.geometry);
-HEStructure.build();
-
-// Get the boundary halfEdges
-const boundaryHalfEdgesArray = [];
-for (const halfEdge of HEStructure.halfEdges) {
-	if (!halfEdge.twin) {
-		boundaryHalfEdgesArray.push(halfEdge);
+// Get the boundary edges (keep only one halfedge for each pair)
+const boundaries = new Set<Halfedge>();
+for (const halfedge of struct.halfedges) {
+	if (!boundaries.has(halfedge.twin) && !halfedge.face) {
+		boundaries.add(halfedge);
 	}
 }
+console.log("Boundary halfedges", boundaries);
 ```
 
 
-##### Example 2: Get the front faces of a mesh
-```javascript
-// Let's admit we have a scene camera and a mesh
-
-// Build the HalfEdge structure
-const HEStructure = new HalfEdgeStructure(mesh.geometry);
-HEStructure.build();
+##### Example 3: Get the front faces of a mesh
+```ts
+const struct = new HalfedgeDS();
+struct.buildFromGeometry(mesh.geometry);
 
 // Get the camera position in mesh's space
 const localCameraPos = mesh.worldToLocal(camera.position.clone());
 
 //  Get the front faces
-const frontFacesArray = [];
-for (const faces of HEStructure.faces) {
-	// /!\ Attention: position is considered in geometry local system
-	if (face.isFront(localCameraPos) { 
-		frontFacesArray.push(face);
+const array = [];
+for (const face of struct.faces) {
+	// /!\ Danger: vertices position are in geometry local system
+	if (face.isFront(localCameraPos)) { 
+		array.push(face);
 	}
 }
+console.log("Front faces", array);
 ```
 ## References
 
