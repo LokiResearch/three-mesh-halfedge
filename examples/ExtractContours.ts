@@ -64,7 +64,7 @@ window.addEventListener('resize', function () {
 
 // Init mesh
 const meshMaterial = new MeshPhongMaterial({
-  color: 0x333388,
+  color: 0x777777,
   flatShading: true,
   side: DoubleSide,
 });
