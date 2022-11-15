@@ -14,7 +14,7 @@ A typescript implementation of the Halfedge structure for three.js geometries.
 
 ## Documentation
 
-[![Open - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://LokiResearch.github.io/three-mesh-halfedge/docs/index.html)
+[![Documentation](https://img.shields.io/badge/view-Documentation-blue?label=Open)](https://LokiResearch.github.io/three-mesh-halfedge/doc/index.html)
 
 *Documentation is in progress.*
 
@@ -71,6 +71,8 @@ for (const faces of HEStructure.faces) {
 	}
 }
 ```
+## References
 
+[Kalle Rutanen Homepage - Halfedge data structures](https://kaba.hilvi.org/homepage/blog/halfedge/halfedge.htm)
 
 
