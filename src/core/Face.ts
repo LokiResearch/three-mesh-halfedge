@@ -10,115 +10,115 @@
 
 // LICENCE: Licence.md 
 
-import {Vector3, Triangle} from 'three';
-import {HalfEdge} from './HalfEdge';
-import {Vertex} from './Vertex';
+import { Vector3, Triangle } from 'three';
+import { Vertex } from './Vertex';
+import { Halfedge } from './Halfedge';
 
 const _viewVector = new Vector3();
-const _u = new Vector3();
+const _normal = new Vector3();
+const _triangle = new Triangle();
+const _vec = new Vector3();
+
+export const NullFace = {} as Face;
 
 export class Face {
 
-  declare halfEdge: HalfEdge;
-  readonly index: number;
-  readonly triangle = new Triangle();
-  readonly normal = new Vector3();
-  readonly midpoint = new Vector3();
+  halfedge: Halfedge;
 
-  constructor(index: number, a: Vertex, b: Vertex, c: Vertex) {
-    this.index = index;
+  constructor(halfEdge: Halfedge) {
+    this.halfedge = halfEdge;
+  }
 
-    this.triangle.set(
-      a.position,
-      b.position,
-      c.position
+  getNormal(target: Vector3) {
+    _triangle.set(
+      this.halfedge.prev.vertex.position,
+      this.halfedge.vertex.position,
+      this.halfedge.next.vertex.position
     );
-    this.triangle.getNormal(this.normal);
-    this.triangle.getMidpoint(this.midpoint);
+    _triangle.getNormal(target);
+  }
+
+  getMidpoint(target: Vector3) {
+    _triangle.set(
+      this.halfedge.prev.vertex.position,
+      this.halfedge.vertex.position,
+      this.halfedge.next.vertex.position
+    );
+    _triangle.getNormal(target);
   }
 
   /**
-   * Returns wether the face is a front regarding the given position
+   * Returns wether the face facing the given position
    *
-   * @param      {Vector3}  position  The position
-   * @return     {boolean}  True if the specified position is front, False otherwise.
+   * @param position  The position
+   * @return `true` if face is front facing, `false` otherwise.
    */
   isFront(position: Vector3) {
+    this.getNormal(_normal);
     return _viewVector
-      .subVectors(position, this.midpoint)
+      .subVectors(position, this.halfedge.vertex.position)
       .normalize()
-      .dot(this.normal) >= 0;
+      .dot(_normal) >= 0;
   }
 
   /**
-  * Return the face halfEdge containing the given position within the tolerance
-  *
-  * @param      {Vector3}          position           The position
-  * @param      {number}           [tolerance=1e-10]  The tolerance
-  * @return     {(HalfEdge|null)}  { description_of_the_return_value }
-  */
-  halfEdgeFromPosition(position: Vector3, tolerance = 1e-10): HalfEdge | null {
+   * Returns the face halfedge containing the given position.
+   * @param position Target position
+   * @param tolerance Tolerance
+   * @returns `HalfEdge` if found, `null` otherwise
+   */
+  halfedgeFromPosition(position: Vector3, tolerance = 1e-10): Halfedge | null {
 
-    const startHalfEdge = this.halfEdge;
-    let halfEdge = startHalfEdge;
-    do {
-      if (halfEdge.containsPoint(position, tolerance)) {
-        return halfEdge;
+    for (const he of this.halfedge.nextLoop()) {
+      if (he.containsPoint(position, tolerance)) {
+        return he;
       }
-      halfEdge = halfEdge.next;
-    } while(halfEdge != startHalfEdge);
-
+    }
     return null;
   }
 
   /**
-  * Returns the face vertex that matches the given position within the tolerance
-  *
-  * @param      {Vector3}        position           The position
-  * @param      {number}         [tolerance=1e-10]  The tolerance
-  * @return     {(Vertex|null)}  { description_of_the_return_value }
-  */
+   * Returns the face vertex that matches the given position within the tolerance
+   * @param position 
+   * @param tolerance 
+   * @returns 
+   */
   vertexFromPosition(position: Vector3, tolerance = 1e-10): Vertex | null {
 
-    const startHalfEdge = this.halfEdge;
-    let halfEdge = startHalfEdge;
-    do {
+    for (const he of this.halfedge.nextLoop()) {
       // Check if position is close enough to the vertex position within the
       // provided tolerance
-      _u.subVectors(halfEdge.vertex.position, position);
+      _vec.subVectors(he.vertex.position, position);
 
-      if (_u.length() < tolerance) {
-        return halfEdge.vertex;
+      if (_vec.length() < tolerance) {
+        return he.vertex;
       }
-
-      halfEdge = halfEdge.next;
-    } while(halfEdge != startHalfEdge);
-
+    }
     return null;
   }
 
   /**
-   * Returns the face halfEdge starting from the given vertex
-   *
-   * @param      {Vertex}  vertex  The vertex
-   * @return     {<type>}  { description_of_the_return_value }
+   * Returns the face halfedge starting from the given vertex
+
+   * @param vertex 
+   * @returns 
    */
-  halfEdgeFromVertex(vertex: Vertex) {
-    const startHalfEdge = this.halfEdge;
-    let halfEdge = startHalfEdge;
-    do {
-      if (halfEdge.vertex === vertex) {
-        return halfEdge;
+  halfedgeFromVertex(vertex: Vertex) {
+    
+    for (const he of this.halfedge.nextLoop()) {
+      if (he.vertex === vertex) {
+        return he;
       }
-
-      halfEdge = halfEdge.next;
-    } while(halfEdge != startHalfEdge);
-
+    }
     return null;
-
   }
 
+  hasVertex(vertex: Vertex) {
+    for (const he of this.halfedge.nextLoop()) {
+      if (he.vertex === vertex) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
-
-
-

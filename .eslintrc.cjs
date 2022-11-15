@@ -18,6 +18,7 @@ module.exports = {
     'array-bracket-spacing':["error"],
     'space-in-parens':["error"],
     "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-this-alias": "off",
     "indent": ["error", 2, {
       "FunctionDeclaration": {"parameters": 2},
       "FunctionExpression": {"parameters": 2}

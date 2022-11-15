@@ -10,52 +10,86 @@
 
 // LICENCE: Licence.md 
 
-import {Vector3} from 'three';
-import {HalfEdge} from './HalfEdge';
+import { Vector3 } from 'three';
+import type { Face } from './Face';
+import { Halfedge } from './Halfedge';
 
 const _u = new Vector3();
+let _count = 0;
+
 
 export class Vertex {
-  /**
-   * Vertex index in the buffer attribute
-   */
-  readonly index: number;
+  /** Vertex position */
+  readonly position: Vector3 = new Vector3();
 
-  /**
-   * Vertex position
-   */
-  readonly position: Vector3;
-  /**
-   * Vertex normal
-   */
-  readonly normal: Vector3;
+  /** Reference to one halfedge starting from the vertex */
+  halfedge: Halfedge | null = null;
 
-  /**
-   * List of halfEdges starting from this Vertex
-   */
-  readonly halfEdges = new Array<HalfEdge>();
+  id: number;
 
-  constructor(index: number, position: Vector3, normal: Vector3) {
-    this.index = index;
-    this.position = position;
-    this.normal = normal;
+  constructor(id = _count) {
+    this.id = id;
+    _count = Math.max(_count, this.id) + 1;
   }
 
   /**
-   * List of boundary halfedges starting from or arriving to this vertex.
+   * Returns a generator of free halfedges (i.e. without face) starting from this 
+   * vertex.
+   * @param start The halfedge to start, default is vertex halfedge
    */
-  connectedBoundaryHalfEdges() {
-    const array = new Array<HalfEdge>();
-    for (const halfEdge of this.halfEdges) {
-      if (!halfEdge.twin) {
-        array.push(halfEdge);
-      }
-
-      if (!halfEdge.prev.twin) {
-        array.push(halfEdge.prev);
+  *boundaryHalfedgesOutLoop(start = this.halfedge) {
+    for (const halfedge of this.loopCW(start)) {
+      if (halfedge.face === null) {
+        yield halfedge;
       }
     }
-    return array;
+  }
+
+  /**
+   * Returns a generator of free halfedges (i.e. without face) arriving to this 
+   * vertex.
+   * @param start The halfedge to start, default is vertex halfedge
+  */
+  *boundaryHalfedgesInLoop(start = this.halfedge) {
+    for (const halfedge of this.loopCW(start)) {
+      if (halfedge.twin.face === null) {
+        yield halfedge.twin;
+      }
+    }
+  }
+
+  /**
+   * Returns whether the vertex is free, i.e. on of its ongoing halfedge has no
+   * face.
+   * 
+   * @ref https://kaba.hilvi.org/homepage/blog/halfedge/halfedge.htm
+   * 
+   * @returns `true` if free, `false` otherwise
+   */
+  isFree() {
+    if (this.isIsolated()) {
+      return true;
+    }
+    for (const halfEdge of this.loopCW()) {
+      if (halfEdge.face === null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isIsolated() {
+    return this.halfedge === null;
+  }
+
+  commonFacesWithVertex(other: Vertex) {
+    const faces = new Array<Face>();
+    for (const halfedge of this.loopCW()) {
+      if (halfedge.face && halfedge.face.hasVertex(other)) {
+        faces.push(halfedge.face);
+      }
+    }
+    return faces;
   }
 
   /**
@@ -70,6 +104,51 @@ export class Vertex {
     return _u.length() < tolerance;
   }
 
+  /**
+   * Returns the halfedge going from *this* vertex to *other* vertex if any.
+   * @param other The other vertex
+   * @returns `HalfEdge` if found, `null` otherwise.
+   */
+  getHalfedgeToVertex(other: Vertex): Halfedge | null {
+    for (const halfEdge of this.loopCW()) {
+      if (halfEdge.twin.vertex === other) {
+        return halfEdge;
+      }
+    }
+    return null;
+  }
+
+  isConnectedToVertex(other: Vertex) {
+    return this.getHalfedgeToVertex(other) !== null;
+  }
+
+  /**
+   * Returns a generator of halfedges starting from this vertex in CW order.
+   * @param start The halfedge to start looping, default is vertex halfedge
+   */
+  *loopCW(start = this.halfedge) {
+    if (start && start.vertex === this) {
+      let curr: Halfedge = start;
+      do {
+        yield curr;
+        curr = curr.twin.next;
+      } while(curr != start);
+    }
+  }
+
+  /**
+   * Returns a generator of halfedges starting from this vertex in CCW order.
+   * @param start The halfedge to start, default is vertex halfedge
+   */
+  *loopCCW(start = this.halfedge) {
+    if (start && start.vertex === this) {
+      let curr: Halfedge = start;
+      do {
+        yield curr;
+        curr = curr.prev.twin;
+      } while(curr != start);
+    }
+  }
 }
 
 

@@ -10,42 +10,40 @@
 
 // LICENCE: Licence.md 
 
-import {Line3, Vector3} from 'three';
-import {Face} from './Face';
-import {Vertex} from './Vertex';
-import {frontSide} from '../utils/geometry';
+import { Line3, Vector3 } from 'three';
+import { Face } from './Face';
+import { Vertex } from './Vertex';
+import { frontSide } from '../utils/geometry';
 
 const _u = new Vector3();
 const _v = new Vector3();
 const _line = new Line3();
 
-export class HalfEdge {
+export class Halfedge {
 
-  readonly face: Face; // Set during HalfEdgeStructure build
-  readonly vertex: Vertex;
-  twin?: HalfEdge;
-  declare prev: HalfEdge; // Set during HalfEdgeStructure build
-  declare next: HalfEdge; // Set during HalfEdgeStructure build
+  vertex: Vertex;
 
-  constructor(face: Face, vertex: Vertex) {
-    this.face = face;
+  // Set during the stucture build phase
+
+  face: Face | null = null;
+  declare twin: Halfedge;
+  declare prev: Halfedge;
+  declare next: Halfedge;
+
+  constructor(vertex: Vertex) {
     this.vertex = vertex;
+  }
+
+  get id() {
+    return this.vertex.id + '-'+ this.twin.vertex.id;
   }
 
   containsPoint(point: Vector3, tolerance = 1e-10): boolean {
     _u.subVectors(this.vertex.position, point)
     _v.subVectors(this.next.vertex.position, point)
     _line.set(this.vertex.position, this.next.vertex.position);
-    _line.closestPointToPoint(point, true, _u)
-    console.log(_u.distanceTo(point));
+    _line.closestPointToPoint(point, true, _u);
     return _u.distanceTo(point) < tolerance;
-  }
-
-  normalAtPosition(point: Vector3, target: Vector3) {
-    _u.subVectors(this.vertex.position, point);
-    _v.subVectors(this.vertex.position, this.next.vertex.position);
-    const ratio = _u.length() / _v.length();
-    return target.lerpVectors(this.vertex.normal, this.next.vertex.normal, 1-ratio);
   }
 
   /**
@@ -54,7 +52,7 @@ export class HalfEdge {
    * @type       {boolean}
    */
   get isBoundary() {
-    return this.twin === undefined;
+    return this.face !== null;
   }
 
   /**
@@ -72,6 +70,30 @@ export class HalfEdge {
         this.twin.prev.vertex.position) > 0;
     }
     return false;
+  }
+
+  /**
+   * Returns a generator looping over all the next halfedges
+   */
+  *nextLoop() {
+    const start: Halfedge = this;
+    let curr: Halfedge = start;
+    do {
+      yield curr;
+      curr = curr.next;
+    } while(curr !== start);
+  }
+
+  /**
+   * Returns a generator looping over all the previous halfedges
+   */
+  *prevLoop() {
+    const start: Halfedge = this;
+    let curr: Halfedge = start;
+    do {
+      yield curr;
+      curr = curr.next;
+    } while(curr !== start);
   }
 
 }

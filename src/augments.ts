@@ -11,12 +11,10 @@
 // LICENCE: Licence.md
 
 declare global {
-
   interface Array<T> {
     clear(): Array<T>;
     remove(t: T): boolean;
   }
-
 }
 
 Array.prototype.clear = function() {

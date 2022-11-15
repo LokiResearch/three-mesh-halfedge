@@ -2,6 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs'
 import htmlTemplate from 'rollup-plugin-generate-html-template';
+import { env } from 'process';
 
 const lib_cfg = {
   input: 'src/index.ts',
@@ -31,40 +32,49 @@ const lib_cfg = {
         "declarationMap": true,
         "declarationDir": "types",
       },
-      exclude: ["examples/*"]
+      exclude: ["examples/*", "node_modules"],
+      noEmitOnError: !env.ROLLUP_WATCH,
     })
   ]
 };
 
-const examples = ['ExtractSilhouette'];
+const examples = ['ExtractContours', 'HalfedgeDSVisualisation'];
 
 const examples_cfg = []
 
 for (const example of examples) {
   examples_cfg.push(
-  {
-    input: `examples/${example}.ts`,
-    output: {
-      file: `build-examples/${example}.js`,
-    },
-    plugins: [
-      commonjs(),
-      typescript({
-        tsconfig: './tsconfig.json',
-      }),
-      nodeResolve(),
-      htmlTemplate({
-        template: `examples/${example}.html`,
-        target: `${example}.html`,
-      }),
-    ]
-  }
+    {
+      input: `examples/${example}.ts`,
+      output: {
+        file: `build-examples/${example}.js`,
+        sourcemap: true,
+      },
+      plugins: [
+        nodeResolve({
+          browser: true,
+        }),
+        commonjs(),
+        typescript({
+          compilerOptions: {
+            "sourceMap": true,
+          },
+          tsconfig: './tsconfig.json',
+          noEmitOnError: !env.ROLLUP_WATCH,
+        }),
+        htmlTemplate({
+          template: `examples/${example}.html`,
+          target: `${example}.html`,
+          attrs: ['type="module"']
+        }),
+      ]
+    }
   );
 }
 
 
 let exported;
-if (process.env.examples) {
+if (env.examples) {
   exported = examples_cfg;
 } else {
   exported = lib_cfg;
