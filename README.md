@@ -7,6 +7,15 @@
 
 A typescript implementation of the Halfedge structure for three.js geometries.
 
+Supports multiple topologies:
+- Multiple edges between the same vertices
+- Isolated polygons
+- Isolated edges
+- Isolated vertices
+- Mixed wireframe and polygons
+- Polygons with an arbitrary number of vertices and edges
+- Polygons meeting only at one vertex
+
 ## Examples
 
 - HalfedgeDS Visualisation [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/HalfedgeDSVisualisation.html)
@@ -67,7 +76,7 @@ for (const face of struct.faces) {
 }
 console.log("Front faces", array);
 ```
-## References
+## Useful links and references
 
 [Kalle Rutanen Homepage - Halfedge data structures](https://kaba.hilvi.org/homepage/blog/halfedge/halfedge.htm)
 

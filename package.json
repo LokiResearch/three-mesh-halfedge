@@ -1,9 +1,12 @@
 {
   "name": "three-mesh-halfedge",
-  "description": "",
+  "description": "A typescript implementation of the Halfedge structure for three.js geometries.",
   "keywords": [
-    "halfedge",
-    "three.js"
+    "threejs",
+    "geometry",
+    "mesh",
+    "csg",
+    "halfedge"
   ],
   "version": "1.0.0",
   "author": {
