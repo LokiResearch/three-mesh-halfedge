@@ -1,8 +1,8 @@
 # three-mesh-halfedge
 
-[![build](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)
-[![npm release](https://img.shields.io/npm/v/three-mesh-halfedge)](https://img.shields.io/npm/v/three-mesh-halfedge)
-[![GitHub release](https://img.shields.io/github/v/release/LokiResearch/three-mesh-halfedge)](https://img.shields.io/github/v/release/LokiResearch/three-mesh-halfedge)
+[![npm release](https://img.shields.io/npm/v/three-mesh-halfedge)](https://www.npmjs.com/package/three-mesh-halfedge)
+[![build](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)](https://github.com/LokiResearch/three-mesh-halfedge/actions)
+[![Documentation](https://img.shields.io/badge/view-Documentation-blue?label=Open)](https://LokiResearch.github.io/three-mesh-halfedge/doc/index.html)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
 A typescript implementation of the Halfedge structure for three.js geometries.
