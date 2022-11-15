@@ -1,5 +1,6 @@
 import {GUI} from 'dat.gui';
-import { AmbientLight,  BufferGeometry, DoubleSide, Float32BufferAttribute, 
+import { AmbientLight,  BackSide,  BufferGeometry, Float32BufferAttribute, 
+  FrontSide, 
   LineBasicMaterial, LineDashedMaterial, LineSegments, Mesh, MeshPhongMaterial, PerspectiveCamera, 
   PointLight, Scene, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -15,7 +16,7 @@ const params = {
   showHidden: true,
 }
 
-const bgColor = 0x555555;
+const bgColor = 0x444444;
 
 // Init renderer
 const renderer = new WebGLRenderer({ antialias: true });
@@ -63,13 +64,20 @@ window.addEventListener('resize', function () {
 }, false);
 
 // Init mesh
-const meshMaterial = new MeshPhongMaterial({
-  color: 0x777777,
+const meshFrontMaterial = new MeshPhongMaterial({
+  color: 0x555577,
   flatShading: true,
-  side: DoubleSide,
+  side: FrontSide,
 });
-const mesh = new Mesh(new BufferGeometry(), meshMaterial);
+const meshBackMaterial = new MeshPhongMaterial({
+  color: 0x333355,
+  flatShading: true,
+  side: BackSide,
+})
+const mesh = new Mesh(new BufferGeometry(), meshFrontMaterial);
+const backMesh = new Mesh(mesh.geometry, meshBackMaterial);
 scene.add(mesh);
+scene.add(backMesh);
 
 // Init half edges visualizations
 const silhouetteGeometry = new BufferGeometry();
@@ -197,6 +205,7 @@ function updateHolesGui() {
 
 function shapeChanged() {
   setupMeshGeometry(mesh, params.shape);
+  backMesh.geometry = mesh.geometry;
   updateHolesGui();
   build();
 }
@@ -204,6 +213,7 @@ function shapeChanged() {
 const debounceBuild = debounce(200, () => {
   struct.clear();
   setupMeshGeometry(mesh, params.shape);
+  backMesh.geometry = mesh.geometry;
   removeTrianglesFromGeometry(mesh.geometry, params.holes);
   struct.buildFromGeometry(mesh.geometry);
   updateContours();

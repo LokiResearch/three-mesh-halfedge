@@ -34,7 +34,7 @@ export function removeTrianglesFromGeometry(
   const position = geometry.getAttribute('position');
   
   const nTriangles = index ? index.count/3 : position.count/3;
-  n = Math.min(n, nTriangles/3);
+  n = Math.min(n, nTriangles/2);
 
   if (n === 0) {
     return;

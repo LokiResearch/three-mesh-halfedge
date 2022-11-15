@@ -1,5 +1,6 @@
 import {GUI} from 'dat.gui';
-import { AmbientLight, BufferGeometry, Color, DoubleSide, Float32BufferAttribute, 
+import { AmbientLight, BackSide, BufferGeometry, Color, Float32BufferAttribute, 
+  FrontSide, 
   LineBasicMaterial, LineSegments, Mesh, MeshPhongMaterial, PerspectiveCamera, 
   PointLight, Scene, Triangle, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -11,10 +12,10 @@ const struct = new HalfedgeDS();
 
 const params = {
   shape: Shape.Sphere,
-  holes: 0,
+  holes: 30,
 }
 
-const bgColor = 0x555555;
+const bgColor = 0x444444;
 
 // Init renderer
 const renderer = new WebGLRenderer({ antialias: true });
@@ -62,19 +63,25 @@ window.addEventListener('resize', function () {
 }, false);
 
 // Init mesh
-const meshMaterial = new MeshPhongMaterial({
-  color: 0x777777,
+const meshFrontMaterial = new MeshPhongMaterial({
+  color: 0x555577,
   flatShading: true,
-  side: DoubleSide,
+  side: FrontSide,
 });
-const mesh = new Mesh(new BufferGeometry(), meshMaterial);
+const meshBackMaterial = new MeshPhongMaterial({
+  color: 0x333355,
+  flatShading: true,
+  side: BackSide,
+})
+const mesh = new Mesh(new BufferGeometry(), meshFrontMaterial);
+const backMesh = new Mesh(mesh.geometry, meshBackMaterial);
 scene.add(mesh);
+scene.add(backMesh);
 
 // Init half edges visualizations
 const structMaterial = new LineBasicMaterial({
   depthTest: true,
   depthWrite: false,
-  side: DoubleSide,
   vertexColors: true,
 });
 
@@ -182,13 +189,14 @@ function updateHolesGui() {
   const index = mesh.geometry.getIndex();
   const position = mesh.geometry.getAttribute('position');
   const nbOfFaces = index ? index.count/3 : position.count/3;
-  holesGUI.max(nbOfFaces/3);
-  params.holes = Math.min(params.holes, nbOfFaces/3);
+  holesGUI.max(nbOfFaces/2);
+  params.holes = Math.min(params.holes, nbOfFaces/2);
   holesGUI.setValue(params.holes);
 }
 
 function shapeChanged() {
   setupMeshGeometry(mesh, params.shape);
+  backMesh.geometry = mesh.geometry;
   updateHolesGui();
   build();
 }
@@ -196,6 +204,7 @@ function shapeChanged() {
 
 const debounceBuild = debounce(200, () => {
   setupMeshGeometry(mesh, params.shape);
+  backMesh.geometry = mesh.geometry;
   removeTrianglesFromGeometry(mesh.geometry, params.holes);
   struct.clear();
   const startTime = performance.now();
