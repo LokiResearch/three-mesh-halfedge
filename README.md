@@ -16,6 +16,11 @@ Supports multiple topologies:
 - Polygons with an arbitrary number of vertices and edges
 - Polygons meeting only at one vertex
 
+## Installation
+```bash
+npm install three-mesh-halfedge
+```
+
 ## Examples
 
 - [HalfedgeDS Visualisation](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/HalfedgeDSVisualisation.html)
