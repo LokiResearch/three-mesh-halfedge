@@ -1,15 +1,18 @@
 # three-mesh-halfedge
 
-[![build](https://github.com/LokiResearch/three-mesh-halfedge/workflows/build/badge.svg)](https://github.com/LokiResearch/three-mesh-halfedge/actions?query=workflow:"build")
-[![examples](https://github.com/LokiResearch/three-mesh-halfedge/workflows/examples-docs/badge.svg)](https://github.com/LokiResearch/three-mesh-halfedge/actions?query=workflow:"examples-docs")
+[![build](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)](https://img.shields.io/github/workflow/status/LokiResearch/three-svg-renderer/build)
+[![npm release](https://img.shields.io/npm/v/three-mesh-halfedge)](https://img.shields.io/npm/v/three-mesh-halfedge)
 [![GitHub release](https://img.shields.io/github/release/LokiResearch/three-mesh-halfedge?include_prereleases=&sort=semver&color=blue)](https://github.com/LokiResearch/three-mesh-halfedge/releases/)
+[![lgtm](https://img.shields.io/lgtm/grade/ts/github/LokiResearch/three-mesh-halfedge?label=code%20quality)](https://img.shields.io/lgtm/grade/ts/github/LokiResearch/three-mesh-halfedge?label=code%20quality
+)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
-A typescript implementation of the HalfEdge structure for three.js geometries.
+A typescript implementation of the Halfedge structure for three.js geometries.
 
 ## Examples
 
-- Realtime silhouette and boundary edges extraction [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractSilhouette.html)
+- HalfedgeDS Visualisation [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/HalfedgeDSVisualisation.html)
+- Realtime contours extraction [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractContours.html)
 
 ## Documentation
 
@@ -22,7 +25,7 @@ A typescript implementation of the HalfEdge structure for three.js geometries.
 ##### Build the structure
 ```javascript
 import * as THREE from 'three';
-import {HalfEdgeStructure} from 'three-mesh-halfedge';
+import { HalfEdge } from 'three-mesh-halfedge';
 
 const geometry = new THREE.BoxGeometry();
 const HEStructure = new HalfEdgeStructure(geometry, {
