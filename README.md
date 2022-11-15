@@ -18,8 +18,8 @@ Supports multiple topologies:
 
 ## Examples
 
-- HalfedgeDS Visualisation [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/HalfedgeDSVisualisation.html)
-- Realtime contours extraction [[link]](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractContours.html)
+- [HalfedgeDS Visualisation](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/HalfedgeDSVisualisation.html)
+- [Realtime contours extraction](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractContours.html)
 
 ## Documentation
 

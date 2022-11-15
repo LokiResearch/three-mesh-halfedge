@@ -24,6 +24,11 @@
     "src",
     "build"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LokiResearch/three-mesh-halfedge.git"
+  },
+  "homepage": "https://lokiresearch.github.io/three-mesh-halfedge/",
   "scripts": {
     "build": "rollup -c",
     "build-examples": "rollup -c --environment examples",
