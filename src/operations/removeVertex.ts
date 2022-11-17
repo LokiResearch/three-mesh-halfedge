@@ -39,6 +39,12 @@ import { removeEdge } from "./removeEdge";
  *         
  */  
 
+/**
+ * Removes a vertex from the struct and all the faces/halfedges connected to it.
+ * @param struct 
+ * @param vertex 
+ * @param mergeFaces 
+ */
 export function removeVertex(
     struct: HalfedgeDS,
     vertex: Vertex,

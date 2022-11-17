@@ -41,7 +41,7 @@ describe ("Add vertex existing position", () => {
 
   test("duplicates not allowed", () => {
     position.set(2, 3, 4);
-    const v = addVertex(struct, position);
+    const v = addVertex(struct, position, true);
 
     expect(struct.vertices.size).toBe(1);
     expect(v).toBe(v1);
@@ -49,7 +49,7 @@ describe ("Add vertex existing position", () => {
 
   test("duplicates allowed", () => {
     position.set(2, 3, 4);
-    const v = addVertex(struct, position, true);
+    const v = addVertex(struct, position);
 
     expect(struct.vertices.size).toBe(2);
     expect(struct.vertices.has(v)).toBeTruthy();

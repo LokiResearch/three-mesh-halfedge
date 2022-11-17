@@ -16,6 +16,12 @@ import { Halfedge } from "../core/Halfedge";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 import { removeFace } from "./removeFace";
 
+/**
+ * Removes an edge from the halfedge 
+ * @param struct
+ * @param halfedge 
+ * @param mergeFaces 
+ */
 export function removeEdge(
     struct: HalfedgeDS,
     halfedge: Halfedge,
@@ -25,7 +31,7 @@ export function removeEdge(
     throw new Error('Halfedge does not belong to struct');
   }
 
-  /**
+  /*
    *      ↖           ↙
    *        ↖       ↙
    *          ↖   ↙

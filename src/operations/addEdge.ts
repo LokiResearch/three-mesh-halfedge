@@ -68,7 +68,7 @@ export function addEdge(
   h2.next = h1;
   h2.prev = h1;
 
-  /**
+  /*
    *        ↖       ↙
    *   out2   ↖   ↙   in2
    *            v2           

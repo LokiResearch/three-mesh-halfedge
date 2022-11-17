@@ -22,18 +22,18 @@ import { Vertex } from "../core/Vertex";
  * 
  * @param struct HalfedgeDS to add the new vertex
  * @param position New vertex position
- * @param allowDuplicates Allow multiple vertices at the same position, default false
+ * @param checkDuplicates Check if existing vertex matches pos, default false
  * @param tolerance Tolerance used for vertices position comparison
  * @returns 
  */
 export function addVertex(
     struct: HalfedgeDS,
     position: Vector3,
-    allowDuplicates = false,
+    checkDuplicates = false,
     tolerance = 1e-10) {
 
   // Check if position matches one face vertex and returns it
-  if (!allowDuplicates) {
+  if (checkDuplicates) {
     for (const vertex of struct.vertices) {
       if (vertex.matchesPosition(position, tolerance)) {
         return vertex;

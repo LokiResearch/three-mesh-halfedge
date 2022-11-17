@@ -10,12 +10,15 @@
 
 // LICENCE: Licence.md 
 
-import { BufferAttribute, BufferGeometry, InterleavedBufferAttribute } from 'three';
+import { BufferAttribute, BufferGeometry, InterleavedBufferAttribute, Vector3 } from 'three';
 import { Face } from './Face';
 import { Vertex } from './Vertex';
 import { Halfedge } from './Halfedge';
 import { addEdge } from '../operations/addEdge';
 import { addFace } from '../operations/addFace';
+import { addVertex } from '../operations/addVertex';
+
+const pos_ = new Vector3();
 
 export interface HalfedgeDSOptions {
   tolerance?: number;
@@ -81,20 +84,20 @@ export class HalfedgeDS {
         const i1 = getVertexIndex(faceIndex*3 + i);
         let v1 = vertexMap.get(i1);
         if (!v1) {
-          v1 = new Vertex();
-          v1.position.fromBufferAttribute(positions, i1);
+          pos_.fromBufferAttribute(positions, i1);
+          v1 = addVertex(this, pos_);
+          v1.id = i1;
           vertexMap.set(i1, v1);
-          this.vertices.add(v1);
         }
 
         // Get the destitation vertex
         const i2 = getVertexIndex(faceIndex*3 + (i+1)%3);
         let v2 = vertexMap.get(i2);
         if (!v2) {
-          v2 = new Vertex(i2);
-          v2.position.fromBufferAttribute(positions, i2);
+          pos_.fromBufferAttribute(positions, i2);
+          v2 = addVertex(this, pos_);
+          v2.id = i2;
           vertexMap.set(i2, v2);
-          this.vertices.add(v2);
         }
 
         // Get the halfedge from v1 to v2
@@ -113,7 +116,8 @@ export class HalfedgeDS {
         loopHalfedges[i] = h1;
       }
 
-      addFace(this, loopHalfedges);
+      const face = addFace(this, loopHalfedges);
+      face.id = faceIndex;
     }
   }
 
@@ -151,7 +155,7 @@ export class HalfedgeDS {
  */
 export function computeVerticesIndexArray(
     positions: BufferAttribute | InterleavedBufferAttribute,
-    tolerance = 1e-4,
+    tolerance = 1e-10,
 ){
 
   const decimalShift = Math.log10(1 / tolerance);
