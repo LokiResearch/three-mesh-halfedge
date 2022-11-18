@@ -215,7 +215,7 @@ const debounceBuild = debounce(200, () => {
   setupMeshGeometry(mesh, params.shape);
   backMesh.geometry = mesh.geometry;
   removeTrianglesFromGeometry(mesh.geometry, params.holes);
-  struct.buildFromGeometry(mesh.geometry);
+  struct.setFromGeometry(mesh.geometry);
   updateContours();
   render();
 });

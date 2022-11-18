@@ -41,16 +41,14 @@ import { HalfedgeDS } from 'three-mesh-halfedge';
 
 // Build the Halfedge structure from a BoxGeometry
 const geometry = new THREE.BoxGeometry();
-const struct = new HalfedgeDS({
-	tolerance: 1e-10,
-});
-struct.buildFromGeometry(geometry);
+const struct = new HalfedgeDS();
+struct.setFromGeometry(geometry, 1e-10);
 ```
 
 ##### Example 2: Extract the boundary halfedges of a mesh
 ```ts
 const struct = new HalfedgeDS();
-struct.buildFromGeometry(mesh.geometry);
+struct.setFromGeometry(mesh.geometry);
 
 // Get the boundary edges (keep only one halfedge for each pair)
 const boundaries = new Set<Halfedge>();
@@ -66,7 +64,7 @@ console.log("Boundary halfedges", boundaries);
 ##### Example 3: Get the front faces of a mesh
 ```ts
 const struct = new HalfedgeDS();
-struct.buildFromGeometry(mesh.geometry);
+struct.setFromGeometry(mesh.geometry);
 
 // Get the camera position in mesh's space
 const localCameraPos = mesh.worldToLocal(camera.position.clone());
@@ -74,7 +72,7 @@ const localCameraPos = mesh.worldToLocal(camera.position.clone());
 //  Get the front faces
 const array = [];
 for (const face of struct.faces) {
-	// /!\ Danger: vertices position are in geometry local system
+	// /!\ Attention: position is considered in geometry local system
 	if (face.isFront(localCameraPos)) { 
 		array.push(face);
 	}

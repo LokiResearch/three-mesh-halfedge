@@ -26,10 +26,8 @@ export function tutorial () {
    */
   {
     const geometry = new THREE.BoxGeometry();
-    const struct = new HalfedgeDS({
-      tolerance: 1e-10,
-    });
-    struct.buildFromGeometry(geometry);
+    const struct = new HalfedgeDS();
+    struct.setFromGeometry(geometry, 1e-10);
   }
 
   /**
@@ -37,7 +35,7 @@ export function tutorial () {
    */
   {
     const struct = new HalfedgeDS();
-    struct.buildFromGeometry(mesh.geometry);
+    struct.setFromGeometry(mesh.geometry);
     
     // Get the boundary edges (keep only one halfedge for each pair)
     const boundaries = new Set<Halfedge>();
@@ -54,7 +52,7 @@ export function tutorial () {
    */
   {
     const struct = new HalfedgeDS();
-    struct.buildFromGeometry(mesh.geometry);
+    struct.setFromGeometry(mesh.geometry);
 
     // Get the camera position in mesh's space
     const localCameraPos = mesh.worldToLocal(camera.position.clone());

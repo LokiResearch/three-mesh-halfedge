@@ -208,7 +208,7 @@ const debounceBuild = debounce(200, () => {
   removeTrianglesFromGeometry(mesh.geometry, params.holes);
   struct.clear();
   const startTime = performance.now();
-  struct.buildFromGeometry(mesh.geometry);
+  struct.setFromGeometry(mesh.geometry);
   const endTime = performance.now();
   updateLinesGeometry();
   updateInfo(endTime - startTime);
