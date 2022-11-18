@@ -17,15 +17,6 @@ import { Halfedge } from "../core/Halfedge";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 import { Vertex } from "../core/Vertex";
 
-
-/**
- * Split the given halfedge at given position and returns the new vertex
- * @param struct The HalfEdge structure to work on
- * @param halfEdge The HalfEdge to be splitted
- * @param position 
- * @returns the new created vertex
- */
-
 export function splitEdge(
     struct: HalfedgeDS,
     halfedge: Halfedge,

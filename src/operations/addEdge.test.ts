@@ -15,15 +15,11 @@
 import { Vector3 } from "three";
 import { Halfedge } from "../core/Halfedge";
 import { HalfedgeDS } from "../core/HalfedgeDS";
-import { addEdge } from "./addEdge";
-import { addFace } from "./addFace";
-import { addVertex } from "./addVertex";
-import '../utils/testutils';
 
 const position = new Vector3();
 const struct = new HalfedgeDS();
 
-/**
+/*
  *       v2
  *       | \ 
  *       |   \ 
@@ -31,15 +27,15 @@ const struct = new HalfedgeDS();
  *      v0 ----- v1
  */      
 
-const v0 = addVertex(struct, position.set(0,0,0));
-const v1 = addVertex(struct, position.set(2,0,0));
-const v2 = addVertex(struct, position.set(0,2,0));
+const v0 = struct.addVertex(position.set(0,0,0));
+const v1 = struct.addVertex(position.set(2,0,0));
+const v2 = struct.addVertex(position.set(0,2,0));
 
 let v0v1: Halfedge, v1v2: Halfedge, v2v0: Halfedge;
 let v1v0: Halfedge, v2v1: Halfedge, v0v2: Halfedge;
 
 test("Link isolated vertices", () => {
-  v0v1 = addEdge(struct, v0, v1);
+  v0v1 = struct.addEdge(v0, v1);
   v1v0 = v0v1.twin;
   expect(v0v1.next).toBeHalfedge(v1v0);
   expect(v0v1.prev).toBeHalfedge(v1v0);
@@ -50,7 +46,7 @@ test("Link isolated vertices", () => {
 }); 
 
 test("Link to another edge", () => {
-  v1v2 = addEdge(struct, v1, v2);
+  v1v2 = struct.addEdge(v1, v2);
   v2v1 = v1v2.twin;
   expect(v1v2.next).toBeHalfedge(v2v1);
   expect(v1v2.prev).toBeHalfedge(v0v1);
@@ -61,7 +57,7 @@ test("Link to another edge", () => {
 });
 
 test("Closing a loop", () => {
-  v2v0 = addEdge(struct, v2, v0);
+  v2v0 = struct.addEdge(v2, v0);
   v0v2 = v2v0.twin;
   expect(v2v0.next).toBeHalfedge(v0v1);
   expect(v2v0.prev).toBeHalfedge(v1v2);
@@ -83,16 +79,16 @@ test("Closing a loop", () => {
  *      v0 ---- v1 ---- v4
  */  
 
-const v3 = addVertex(struct, position.set(2,2,0));
-const v4 = addVertex(struct, position.set(4,2,0));
+const v3 = struct.addVertex(position.set(2,2,0));
+const v4 = struct.addVertex(position.set(4,2,0));
 
 let v3v1: Halfedge, v1v4: Halfedge, v4v3: Halfedge;
 let v1v3: Halfedge, v4v1: Halfedge, v3v4: Halfedge;
 
 test("Connect to face", () => {
-  addFace(struct, [v0v1, v1v2, v2v0]);
+  struct.addFace([v0v1, v1v2, v2v0]);
 
-  v3v1 = addEdge(struct, v3, v1);
+  v3v1 = struct.addEdge(v3, v1);
   v1v3 = v3v1.twin;
 
   expect(v3v1.next).toBeHalfedge(v1v0);
@@ -100,7 +96,7 @@ test("Connect to face", () => {
   expect(v1v3.next).toBeHalfedge(v3v1);
   expect(v1v3.prev).toBeHalfedge(v2v1);
 
-  v1v4 = addEdge(struct, v1, v4);
+  v1v4 = struct.addEdge(v1, v4);
   v4v1 = v1v4.twin;
 
   expect(v1v4.next).toBeHalfedge(v4v1);
@@ -108,14 +104,14 @@ test("Connect to face", () => {
   expect(v4v1.next).toBeOneOfHalfedges([v1v0, v1v3]);
   expect(v1v4.prev).toBeOneOfHalfedges([v2v1, v3v1]);
 
-  v4v3 = addEdge(struct, v4, v3);
+  v4v3 = struct.addEdge(v4, v3);
   v3v4 = v4v3.twin;
   expect(v4v3.next).toBeHalfedge(v3v1);
   expect(v4v3.prev).toBeHalfedge(v1v4);
   expect(v3v4.next).toBeHalfedge(v4v1);
   expect(v3v4.prev).toBeHalfedge(v1v3);
 
-  addFace(struct, [v1v4, v4v3, v3v1]);
+  struct.addFace([v1v4, v4v3, v3v1]);
 
   expect(v1v4.prev).toBeHalfedge(v3v1);
   expect(v3v1.next).toBeHalfedge(v1v4);

@@ -15,7 +15,6 @@
 import { Vector3 } from "three";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 import { Vertex } from "../core/Vertex";
-import { addVertex } from "./addVertex";
 
 const v1 = new Vertex();
 v1.position.set(2, 3, 4);
@@ -30,7 +29,7 @@ beforeEach(() => {
 test("Add vertex new position", () => {
 
   position.set(1,2,3);
-  const v = addVertex(struct, position);
+  const v = struct.addVertex(position);
 
   expect(struct.vertices.size).toBe(2);
   expect(struct.vertices.has(v)).toBeTruthy();
@@ -41,7 +40,7 @@ describe ("Add vertex existing position", () => {
 
   test("duplicates not allowed", () => {
     position.set(2, 3, 4);
-    const v = addVertex(struct, position, true);
+    const v = struct.addVertex(position, true);
 
     expect(struct.vertices.size).toBe(1);
     expect(v).toBe(v1);
@@ -49,7 +48,7 @@ describe ("Add vertex existing position", () => {
 
   test("duplicates allowed", () => {
     position.set(2, 3, 4);
-    const v = addVertex(struct, position);
+    const v = struct.addVertex(position);
 
     expect(struct.vertices.size).toBe(2);
     expect(struct.vertices.has(v)).toBeTruthy();

@@ -82,6 +82,7 @@ export class Halfedge {
       yield curr;
       curr = curr.next;
     } while(curr !== start);
+    return null;
   }
 
   /**
@@ -94,6 +95,7 @@ export class Halfedge {
       yield curr;
       curr = curr.next;
     } while(curr !== start);
+    return null;
   }
 
 }

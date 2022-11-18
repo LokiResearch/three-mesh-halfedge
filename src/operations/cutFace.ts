@@ -17,16 +17,6 @@ import { Halfedge } from "../core/Halfedge";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 import { Vertex } from "../core/Vertex";
 
-/**
- * Cuts the given `face` between the vertices `v1` and `v2`. 
- * v1 and v2 must either be vertices of the face or isolated vertices.
- * 
- * @param struct The {@link HalfedgeDS} the `face` belongs to
- * @param face Face to cut
- * @param v1 1st vertex
- * @param v2 2nd vertex
- * @returns the new face
- */
 export function cutFace(
     struct: HalfedgeDS,
     face: Face,
@@ -50,14 +40,14 @@ export function cutFace(
     throw new Error('Vertices v1 and v2 should be different');
   }
 
-  const out1 = face.halfedgeFromVertex(v1);
-  if (!out1 && !v1.isIsolated()) {
-    throw new Error('Vertices v1 does not belong to face nor is isolated');
+  let out1 = face.halfedgeFromVertex(v1);
+  if (!out1 && !v1.isFree()) {
+    throw new Error('Vertices v1 does not belong to face nor is free');
   }
 
-  const out2 = face.halfedgeFromVertex(v2);
-  if (!out2 && !v2.isIsolated()) {
-    throw new Error('Vertices v2 does not belong to face');
+  let out2 = face.halfedgeFromVertex(v2);
+  if (!out2 && !v2.isFree()) {
+    throw new Error('Vertices v2 does not belong to face nor is free');
   }
 
   // Check if v1 is already connected to v2 in the face
@@ -81,7 +71,22 @@ export function cutFace(
    *        ↖   v1   ↙               ↖   ↓↑   ↙    
    *          ↖    ↙                   ↖ ↓↑ ↙  
    *            v2                       v2
-   */  
+   * 
+   *  --------------------------------------
+   * 
+   *        ↖       ↙
+   *   out2   ↖   ↙   in2
+   *            v2           
+   *            ⇅        
+   *            ⇅   
+   *        h1  ⇅  h2     
+   *            ⇅  
+   *            ⇅  
+   *            v1
+   *    in1  ↗     ↘  out1
+   *       ↗         ↘
+   *            
+   */
 
   // Create new halfedges
   const h1 = new Halfedge(v1);
@@ -95,6 +100,9 @@ export function cutFace(
   h2.next = h1;
   h2.prev = h1;
 
+  // If v1 is not part of face, get any outgoing halfedge
+  out1 = out1 ?? v1.boundaryHalfedgesOutLoop().next().value;
+
   // Update refs around v1 if not isolated
   if (out1) {
     const in1 = out1.prev;
@@ -106,6 +114,9 @@ export function cutFace(
   } else {
     v1.halfedge = h1;
   }
+
+  // If v2 is not part of face, get any outgoing halfedge
+  out2 = out2 ?? v2.boundaryHalfedgesOutLoop().next().value;
 
   // Update refs around v2 if not isolated
   if (out2) {
@@ -123,7 +134,14 @@ export function cutFace(
   struct.halfedges.add(h1);
   struct.halfedges.add(h2);
 
-  // Check if h1 and h2 (twin halfedges) are on the same loop
+  // In the case where we connect isolated halfedge (without face) to this face, 
+  // We update face ref loop
+  for (const he of face.halfedge.nextLoop()){
+    he.face = face;
+  }
+
+  // Check if h1 and h2 (twin halfedges) are on the same loop, if there aren't,
+  // it means we created a new halfedges loop, i.e. new face
   let found = false;
   const loop = h1.nextLoop();
   let h = loop.next();
@@ -132,13 +150,13 @@ export function cutFace(
     h = loop.next();
   }
 
-  let newFace = null;
-
   if (!found) {
     // h2 is on a different loop than h1
 
     // Update initial face halfedge reference in case it changed loop 
     face.halfedge = h1;
+
+    let newFace = null;
 
     if (createNewFace) {
       newFace = new Face(h2);
@@ -152,5 +170,5 @@ export function cutFace(
     }
   }
 
-  return newFace;
+  return h1;
 }

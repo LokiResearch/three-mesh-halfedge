@@ -16,12 +16,6 @@ import { Face } from "../core/Face";
 import { Halfedge } from "../core/Halfedge";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 
-/**
- * Adds a face to an existing halfedge loop
- * @param struct 
- * @param halfedge 
- * @returns 
- */
 export function addFace(struct: HalfedgeDS, halfedges: Halfedge[]) {
 
   const size = halfedges.length;
@@ -77,7 +71,7 @@ export function addFace(struct: HalfedgeDS, halfedges: Halfedge[]) {
  * @param out 
  * @returns 
  */
-export function makeHalfedgesAdjacent(
+function makeHalfedgesAdjacent(
     halfIn: Halfedge,
     halfOut: Halfedge): boolean {
 

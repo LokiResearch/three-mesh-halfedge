@@ -51,6 +51,7 @@ export class Vertex {
         yield halfedge;
       }
     }
+    return null;
   }
 
   /**
@@ -64,6 +65,7 @@ export class Vertex {
         yield halfedge.twin;
       }
     }
+    return null;
   }
 
   /**
@@ -142,6 +144,7 @@ export class Vertex {
         curr = curr.twin.next;
       } while(curr != start);
     }
+    return null;
   }
 
   /**
@@ -156,6 +159,7 @@ export class Vertex {
         curr = curr.prev.twin;
       } while(curr != start);
     }
+    return null;
   }
 }
 

@@ -16,17 +16,6 @@ import { Halfedge } from "../core/Halfedge";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 import { Vertex } from "../core/Vertex";
 
-/**
- * Adds an edge (i.e. a pair of halfedges) between the given vertices.
- * Requires vertices to be free, i.e., there is at least one free halfedge 
- * (i.e. without face) in their neighborhood.
- * 
- * @param struct 
- * @param v1 
- * @param v2 
- * @param allowParallels 
- * @returns Existing or new halfedge
- */
 export function addEdge(
     struct: HalfedgeDS,
     v1: Vertex,

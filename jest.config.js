@@ -8,5 +8,5 @@ export default {
       tsconfig: '<rootDir>/tsconfig.json',
     },
   },
-  "setupFilesAfterEnv": ['./src/augments.ts']
+  "setupFilesAfterEnv": ['./src/setuptests.ts']
 }

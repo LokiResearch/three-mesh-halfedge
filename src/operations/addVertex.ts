@@ -16,16 +16,6 @@ import { Vector3 } from "three";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 import { Vertex } from "../core/Vertex";
 
-/**
- * Adds a new {@link Vertex} to the {@link HalfedgeDS} at the given 
- * position and returns it.
- * 
- * @param struct HalfedgeDS to add the new vertex
- * @param position New vertex position
- * @param checkDuplicates Check if existing vertex matches pos, default false
- * @param tolerance Tolerance used for vertices position comparison
- * @returns 
- */
 export function addVertex(
     struct: HalfedgeDS,
     position: Vector3,

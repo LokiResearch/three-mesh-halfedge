@@ -10,117 +10,50 @@
 
 // LICENCE: Licence.md 
 
-import { BufferAttribute, BufferGeometry, InterleavedBufferAttribute, Vector3 } from 'three';
+import { BufferGeometry, Vector3 } from 'three';
 import { Face } from './Face';
 import { Vertex } from './Vertex';
 import { Halfedge } from './Halfedge';
 import { addEdge } from '../operations/addEdge';
 import { addFace } from '../operations/addFace';
 import { addVertex } from '../operations/addVertex';
+import { removeVertex } from '../operations/removeVertex';
+import { removeEdge } from '../operations/removeEdge';
+import { removeFace } from '../operations/removeFace';
+import { cutFace } from '../operations/cutFace';
+import { splitEdge } from '../operations/splitEdge';
+import { setFromGeometry } from '../operations/setFromGeometry';
 
-const pos_ = new Vector3();
 
-export interface HalfedgeDSOptions {
-  tolerance?: number;
-}
-
+/**
+ * Class representing an Halfedge Data Structure
+ */
 export class HalfedgeDS {
 
+  /** @readonly Faces */
   readonly faces = new Set<Face>();
+  /** @readonly Vertices */
   readonly vertices = new Set<Vertex>();
+  /** @readonly Halfedges */
   readonly halfedges = new Set<Halfedge>();
-  readonly options = {
-    tolerance: 1e-10,
+
+  /**
+   * Sets the halfedge structure from a BufferGeometry.
+   * @param geometry BufferGeometry to read
+   * @param tolerance Tolerance distance from which positions are considered equal
+   */
+  setFromGeometry(geometry: BufferGeometry, tolerance = 1e-10) {
+    return setFromGeometry(this, geometry, tolerance);
   }
 
-  constructor(options: HalfedgeDSOptions = {}) {
-    Object.assign(this.options, options);
-  }
-
-  buildFromGeometry(geometry: BufferGeometry) {
-
-    this.clear();
-
-    const options = this.options;
-
-    // Check position and normal attributes
-    if (!geometry.hasAttribute("position")) {
-      throw new Error("BufferGeometry does not have a position BufferAttribute.");
-    }
-
-    const positions = geometry.getAttribute('position');
-
-    // Get the merged vertices Array
-    const indexVertexArray = computeVerticesIndexArray(positions, options.tolerance);
-
-    // If the geometry is not indexed, we get the indexes of faces vertices from
-    // the position buffer attribute directly in group of 3
-    let nbOfFaces = positions.count/3;
-    let getVertexIndex = function(bufferIndex: number) {
-      return indexVertexArray[bufferIndex];
-    }
-    // Otherwise, if the geometry is indexed, we get the index of faces vertices
-    // from the index buffer in group of 3
-    const indexBuffer = geometry.getIndex();
-    if (indexBuffer) {
-      nbOfFaces = indexBuffer.count/3;
-      getVertexIndex = function(bufferIndex: number) {
-        return indexVertexArray[indexBuffer.array[bufferIndex]];
-      }
-    }
-
-    // Save halfedges in a map where with a hash <src-vertex-id>
-    // their hash is index1-index2, so that it is easier to find the twin
-    const halfedgeMap = new Map<string, Halfedge>();
-    const vertexMap = new Map<number, Vertex>();
-
-    const loopHalfedges = new Array<Halfedge>(3).fill({} as Halfedge);
-
-    for (let faceIndex = 0; faceIndex < nbOfFaces; faceIndex++) {
-
-      for (let i=0; i<3; i++) {
-
-        // Get the source vertex v1
-        const i1 = getVertexIndex(faceIndex*3 + i);
-        let v1 = vertexMap.get(i1);
-        if (!v1) {
-          pos_.fromBufferAttribute(positions, i1);
-          v1 = addVertex(this, pos_);
-          v1.id = i1;
-          vertexMap.set(i1, v1);
-        }
-
-        // Get the destitation vertex
-        const i2 = getVertexIndex(faceIndex*3 + (i+1)%3);
-        let v2 = vertexMap.get(i2);
-        if (!v2) {
-          pos_.fromBufferAttribute(positions, i2);
-          v2 = addVertex(this, pos_);
-          v2.id = i2;
-          vertexMap.set(i2, v2);
-        }
-
-        // Get the halfedge from v1 to v2
-        const hash1 = i1+'-'+i2;
-        let h1 = halfedgeMap.get(hash1);
-
-        if (!h1) {
-
-          h1 = addEdge(this, v1, v2);
-          const h2 = h1.twin;
-          const hash2 = i2+'-'+i1;
-          halfedgeMap.set(hash1, h1);
-          halfedgeMap.set(hash2, h2);
-        }
-        
-        loopHalfedges[i] = h1;
-      }
-
-      const face = addFace(this, loopHalfedges);
-      face.id = faceIndex;
-    }
-  }
-
+  /**
+   * Returns an array of all the halfedge loops in the structure.
+   * 
+   * *Note: Actually returns an array of halfedges from which loop generator
+   * can be called*
+   * 
+   * @returns 
+   */
   loops() {
     const loops = new Array<Halfedge>();
 
@@ -138,52 +71,117 @@ export class HalfedgeDS {
     return loops;
   }
 
+  /**
+   * Clear the structure data
+   */
   clear() {
     this.faces.clear();
     this.vertices.clear();
     this.halfedges.clear();
   }
-}
 
-/**
- * Returns an array where each index points to its new index in the buffer
- * attribute
- * 
- * @param positions Vertices positions buffer
- * @param tolerance Distance tolerance of the vertices to merge
- * @returns 
- */
-export function computeVerticesIndexArray(
-    positions: BufferAttribute | InterleavedBufferAttribute,
-    tolerance = 1e-10,
-){
-
-  const decimalShift = Math.log10(1 / tolerance);
-  const shiftMultiplier = Math.pow(10, decimalShift);
-
-  const hashMap = new Map<string, number>();
-  const indexArray = new Array<number>();
-
-  for (let i=0; i < positions.count; i++) {
-    // Compute a hash based on the vertex position rounded to a given precision
-    let hash = "";
-    for (let j=0; j<3; j++) {
-      hash += `${Math.round(positions.array[i*3+j] * shiftMultiplier)}`;
-    }
-
-    // If hash already exist, then set the buffer index to the existing vertex,
-    // otherwise, create it
-    let vertexIndex = hashMap.get(hash);
-    if (vertexIndex === undefined) {
-      vertexIndex = i;
-      hashMap.set(hash, i);
-    }
-    indexArray.push(vertexIndex);
+  /**
+   * Adds a new vertex to the structure at the given position and returns it.
+   * If checkDuplicates is true, returns any existing vertex that matches the 
+   * given position.
+   * 
+   * @param position New vertex position
+   * @param checkDuplicates Enable/disable existing vertex matching, default false
+   * @param tolerance Tolerance used for vertices position comparison
+   * @returns 
+   */
+  addVertex(
+      position: Vector3,
+      checkDuplicates = false,
+      tolerance = 1e-10) {
+    return addVertex(this, position, checkDuplicates, tolerance);
   }
-  return indexArray;
+
+  /**
+   * Adds an edge (i.e. a pair of halfedges) between the given vertices.
+   * Requires vertices to be free, i.e., there is at least one free halfedge 
+   * (i.e. without face) in their neighborhood.
+   * 
+   * @param v1 First vertex to link
+   * @param v2 Second vertex to link
+   * @param allowParallels Allows multiple pair of halfedges between vertices, default false
+   * @returns Existing or new halfedge
+   */
+  addEdge(v1: Vertex, v2: Vertex, allowParallels = false) {
+    return addEdge(this, v1, v2, allowParallels)
+  }
+
+  /**
+   * Adds a face to an existing halfedge loop
+   * @param halfedge 
+   * @returns 
+   */
+  addFace(halfedges: Halfedge[]) {
+    return addFace(this, halfedges);
+  }
+
+  /**
+   * Removes a vertex from the structure
+   * @param vertex Vertex to remove
+   * @param mergeFaces If true, merges connected faces if any, otherwise removes them. Default true
+   */
+  removeVertex(vertex: Vertex, mergeFaces = true) {
+    return removeVertex(this, vertex, mergeFaces);
+  }
+
+  /**
+   * Removes an edge from the structrure
+   * @param halfedge Halfedge to remove
+   * @param mergeFaces If true, merges connected faces if any, otherwise removes them. Default true
+   */
+  removeEdge(halfedge: Halfedge, mergeFaces = true) {
+    return removeEdge(this, halfedge, mergeFaces);
+  }
+
+  /**
+   * Removes a face from the structure.
+   * @param face Face to remove
+   */
+  removeFace(face: Face) {
+    return removeFace(this, face);
+  }
+
+  /**ts
+   * Cuts the `face` between the vertices `v1` and `v2`. 
+   * v1 and v2 must either be vertices of the face or isolated vertices.
+   * 
+   * To test if a new face is created, simply do
+   * ```
+   *    const halfedge = struct.cutFace(face, v1, v2, true);
+   *    if (halfedge.face !== halfedge.twin.face) {
+   *      // Halfedge are on different faces / loops
+   *      const existingFace = halfedge.face;
+   *      const newFace = halfedge.twin.face;
+   *    }
+   * ```   
+   * 
+   * 
+   * @param face Face to cut
+   * @param v1 1st vertex
+   * @param v2 2nd vertex
+   * @param createNewFace wether to create a new face or not when cutting
+   * @returns the cutting halfedge
+   */
+  cutFace(face: Face, v1: Vertex, v2: Vertex, createNewFace = true) {
+    return cutFace(this, face, v1, v2, createNewFace);
+  }
+
+  /**
+   * Splits the halfedge at position and returns the new vertex
+   * @param halfEdge The HalfEdge to be splitted
+   * @param position Position of the split vertex
+   * @returns the new created vertex
+   */
+  splitEdge(halfedge: Halfedge, position: Vector3, tolerance = 1e-10) {
+    return splitEdge(this, halfedge, position, tolerance);
+  }
+
 }
-
-
 
 
 

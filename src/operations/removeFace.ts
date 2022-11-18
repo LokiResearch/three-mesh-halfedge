@@ -15,11 +15,6 @@
 import { Face } from "../core/Face";
 import { HalfedgeDS } from "../core/HalfedgeDS";
 
-/**
- * Removes the given face from the HalfedgeStructure.
- * @param struct 
- * @param face 
- */
 export function removeFace(
     struct: HalfedgeDS,
     face: Face) {
