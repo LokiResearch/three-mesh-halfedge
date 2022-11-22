@@ -1,18 +1,24 @@
 import {GUI} from 'dat.gui';
-import { AmbientLight, BackSide, BufferGeometry, Color, Float32BufferAttribute, 
-  FrontSide, 
-  LineBasicMaterial, LineSegments, Mesh, MeshPhongMaterial, PerspectiveCamera, 
-  PointLight, Scene, Triangle, Vector3, WebGLRenderer } from 'three';
+import { AmbientLight, BackSide, BufferGeometry, Color, 
+  FrontSide, Mesh, MeshPhongMaterial, PerspectiveCamera, 
+  PointLight, Scene, Triangle, Vector2, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
+
 import {HalfedgeDS} from '../src/index';
 import {debounce} from 'throttle-debounce';
 import { removeTrianglesFromGeometry, setupMeshGeometry, Shape } from './utils';
 
 const struct = new HalfedgeDS();
+const vec2 = new Vector2();
+
 
 const params = {
   shape: Shape.Sphere,
   holes: 30,
+  lineWidth: 2,
 }
 
 const bgColor = 0x444444;
@@ -44,6 +50,7 @@ scene.add(camera);
 const gui = new GUI();
 gui.add(params, 'shape', Shape).onChange(shapeChanged);
 const holesGUI = gui.add(params, 'holes', 0, 5, 1).onFinishChange(build);
+gui.add(params, 'lineWidth', 1, 5, 0.1).onChange(setLineWidth);
 gui.add({'rebuild':build}, 'rebuild');
 gui.open();
 
@@ -62,6 +69,8 @@ window.addEventListener('resize', function () {
 
 }, false);
 
+
+
 // Init mesh
 const meshFrontMaterial = new MeshPhongMaterial({
   color: 0x555577,
@@ -79,14 +88,16 @@ scene.add(mesh);
 scene.add(backMesh);
 
 // Init half edges visualizations
-const structMaterial = new LineBasicMaterial({
+const linesMaterial = new LineMaterial({
+  linewidth: 2,
   depthTest: true,
   depthWrite: false,
   vertexColors: true,
 });
 
-const lines = new LineSegments(new BufferGeometry(), structMaterial);
+const lines = new LineSegments2(new LineSegmentsGeometry(), linesMaterial);
 scene.add(lines);
+
 
 // Init HalfEdge Structure
 
@@ -172,13 +183,19 @@ function updateLinesGeometry() {
       colors.push(c.r, c.g, c.b);
       colors.push(c.r, c.g, c.b);
     }
+
   }
 
   lines.geometry.dispose();
-  lines.geometry = new BufferGeometry();
-  lines.geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
-  lines.geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
+  lines.geometry = new LineSegmentsGeometry();
+  lines.geometry.setPositions(vertices);
+  lines.geometry.setColors(colors);
+  lines.computeLineDistances();
+}
 
+function setLineWidth() {
+  linesMaterial.linewidth = params.lineWidth;
+  render();
 }
 
 function onOrbitChanged() {
@@ -232,6 +249,8 @@ function updateInfo(delta: number) {
 }
 
 function render() {
+  renderer.getSize(vec2);
+  linesMaterial.resolution.copy(vec2);
   gui.updateDisplay();
   renderer.render(scene, camera);
 }

@@ -7,6 +7,9 @@
 
 A typescript implementation of the Halfedge structure for three.js geometries.
 
+<img src="./images/halfedge.png" alt="drawing" width="49%"/>
+<img src="./images/contours.png" alt="drawing" width="49%"/>
+
 Supports multiple topologies:
 - Multiple edges between the same vertices
 - Isolated polygons
@@ -16,15 +19,15 @@ Supports multiple topologies:
 - Polygons with an arbitrary number of vertices and edges
 - Polygons meeting only at one vertex
 
-## Installation
-```bash
-npm install three-mesh-halfedge
-```
-
 ## Examples
 
 - [HalfedgeDS Visualisation](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/HalfedgeDSVisualisation.html)
 - [Realtime contours extraction](https://LokiResearch.github.io/three-mesh-halfedge/build-examples/ExtractContours.html)
+
+## Installation
+```bash
+npm install three-mesh-halfedge
+```
 
 ## Documentation
 

@@ -1,18 +1,22 @@
 import {GUI} from 'dat.gui';
-import { AmbientLight,  BackSide,  BufferGeometry, Float32BufferAttribute, 
-  FrontSide, 
-  LineBasicMaterial, LineDashedMaterial, LineSegments, Mesh, MeshPhongMaterial, PerspectiveCamera, 
-  PointLight, Scene, WebGLRenderer } from 'three';
+import { AmbientLight,  BackSide,  BufferGeometry, 
+  FrontSide, GreaterDepth, Mesh, MeshPhongMaterial, PerspectiveCamera, 
+  PointLight, Scene, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {HalfedgeDS, Halfedge, Face} from '../src/index';
 import {debounce} from 'throttle-debounce';
 import { removeTrianglesFromGeometry, setupMeshGeometry, Shape } from './utils';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 const struct = new HalfedgeDS();
+const vec2 = new Vector2();
 
 const params = {
   shape: Shape.Cylinder,
   holes: 0,
+  lineWidth: 2,
   showHidden: true,
 }
 
@@ -46,6 +50,8 @@ const gui = new GUI();
 gui.add(params, 'shape', Shape).onChange(shapeChanged);
 gui.add(params, 'showHidden').onChange(showHiddenChanged);
 const holesGUI = gui.add(params, 'holes', 0, 5, 1).onFinishChange(build);
+gui.add(params, 'lineWidth', 1, 5, 0.1).onChange(setLineWidth);
+gui.add({'rebuild':build}, 'rebuild');
 gui.open();
 
 // Init controls
@@ -80,51 +86,83 @@ scene.add(mesh);
 scene.add(backMesh);
 
 // Init half edges visualizations
-const silhouetteGeometry = new BufferGeometry();
-const boundaryGeometry = new BufferGeometry();
-const silMaterial = new LineBasicMaterial({
+let silhouetteGeometry = new LineSegmentsGeometry();
+let boundaryGeometry = new LineSegmentsGeometry();
+
+vec2.set(window.innerWidth, window.innerHeight);
+
+const silMaterial = new LineMaterial({
   color: 0x00FF00,
-  depthTest: false,
   depthWrite: false,
+  linewidth: params.lineWidth,
 });
 
-const boundMaterialHidden = new LineDashedMaterial({
+const boundMaterialHidden = new LineMaterial({
   color: 0xFF0000,
-  depthTest: false,
   depthWrite: false,
-  dashSize: 0.03,
-  gapSize: 0.03,
+  dashed: true,
+  dashSize: 0.05,
+  gapSize: 0.05,
+  linewidth: params.lineWidth,
+  depthFunc: GreaterDepth,
+  polygonOffset: true,
+  polygonOffsetFactor: -5.0,
+  polygonOffsetUnits: -5.0
 });
 
-const boundMaterialVisible = new LineBasicMaterial({
+const boundMaterialVisible = new LineMaterial({
   color: 0xFF0000,
-  depthTest: true,
   depthWrite: false,
-  linewidth: 2,
+  linewidth: params.lineWidth,
 });
 
 
-const silLine = new LineSegments(silhouetteGeometry, silMaterial);
-silLine.renderOrder = 30;
-const boundLineHidden = new LineSegments(boundaryGeometry, boundMaterialHidden);
-boundLineHidden.renderOrder = 10;
-const boundLineVisible = new LineSegments(boundaryGeometry, boundMaterialVisible);
-boundLineVisible.renderOrder = 20;
-scene.add(silLine);
-scene.add(boundLineHidden);
-scene.add(boundLineVisible);
+const boundaryHiddenLines = new LineSegments2(boundaryGeometry, boundMaterialHidden);
+const boundaryVisibleLines = new LineSegments2(boundaryGeometry, boundMaterialVisible);
+const silhouetteLines = new LineSegments2(silhouetteGeometry, silMaterial);
+
+
+mesh.renderOrder = 5;
+backMesh.renderOrder = 5;
+boundaryHiddenLines.renderOrder = 10;
+boundaryVisibleLines.renderOrder = 20;
+silhouetteLines.renderOrder = 30;
+
+scene.add(boundaryHiddenLines);
+scene.add(boundaryVisibleLines);
+scene.add(silhouetteLines);
 
 const frontFaces = new Set<Face>();
 const silhouetteHalfedges = new Array<Halfedge>();
 const boundaryHalfedges = new Array<Halfedge>();
 
-// Init HalfEdge Structure
+
+
+function setLineWidth() {
+  silMaterial.linewidth = params.lineWidth;
+  boundMaterialHidden.linewidth = params.lineWidth;
+  boundMaterialVisible.linewidth = params.lineWidth;
+  render();
+}
 
 function updateContours() {
+
+  silhouetteGeometry.dispose();
+  silhouetteGeometry = new LineSegmentsGeometry();
+  boundaryGeometry.dispose();
+  boundaryGeometry = new LineSegmentsGeometry();
+
+  boundaryHiddenLines.geometry = boundaryGeometry
+  boundaryVisibleLines.geometry = boundaryGeometry
+  silhouetteLines.geometry = silhouetteGeometry
 
   extractHalfEdges();
   updateGeometryFromHalfedges(silhouetteGeometry, silhouetteHalfedges);
   updateGeometryFromHalfedges(boundaryGeometry, boundaryHalfedges);
+  boundaryHiddenLines.computeLineDistances();
+  boundaryVisibleLines.computeLineDistances();
+  silhouetteLines.computeLineDistances();
+
 }
 
 function updateFrontFaces() {
@@ -143,7 +181,7 @@ function updateFrontFaces() {
 }
 
 function showHiddenChanged() {
-  boundLineHidden.visible = params.showHidden;
+  boundaryHiddenLines.visible = params.showHidden;
   render();
 }
 
@@ -171,7 +209,7 @@ function extractHalfEdges() {
 }
 
 function updateGeometryFromHalfedges(
-    target: BufferGeometry,
+    target: LineSegmentsGeometry,
     halfEdges: Array<Halfedge>){
 
   // Update silhouette geometries
@@ -185,8 +223,7 @@ function updateGeometryFromHalfedges(
     vertices.push(halfEdge.next.vertex.position.z);
   }
 
-  target.setAttribute("position", new Float32BufferAttribute(vertices, 3));
-
+  target.setPositions(vertices);
 }
 
 function onOrbitChanged() {
@@ -239,8 +276,10 @@ function updateInfo() {
 
 function render() {
 
-  boundLineHidden.computeLineDistances();
-  boundLineVisible.computeLineDistances();
+  renderer.getSize(vec2);
+  silMaterial.resolution.copy(vec2);
+  boundMaterialHidden.resolution.copy(vec2);
+  boundMaterialVisible.resolution.copy(vec2);
 
   gui.updateDisplay();
 
