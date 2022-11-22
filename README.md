@@ -7,8 +7,7 @@
 
 A typescript implementation of the Halfedge structure for three.js geometries.
 
-<img src="./images/halfedge.png" width="45%"/>
-<img src="./images/contours.png" width="45%"/>
+<img src="./images/halfedge.png" width="49%"/><img src="./images/contours.png" width="49%"/>
 
 Supports multiple topologies:
 - Multiple edges between the same vertices
