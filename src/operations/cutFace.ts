@@ -101,7 +101,7 @@ export function cutFace(
   h2.prev = h1;
 
   // If v1 is not part of face, get any outgoing halfedge
-  out1 = out1 ?? v1.boundaryHalfedgesOutLoop().next().value;
+  out1 = out1 ?? v1.freeHalfedgesOutLoop().next().value;
 
   // Update refs around v1 if not isolated
   if (out1) {
@@ -116,7 +116,7 @@ export function cutFace(
   }
 
   // If v2 is not part of face, get any outgoing halfedge
-  out2 = out2 ?? v2.boundaryHalfedgesOutLoop().next().value;
+  out2 = out2 ?? v2.freeHalfedgesOutLoop().next().value;
 
   // Update refs around v2 if not isolated
   if (out2) {

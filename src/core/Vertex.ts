@@ -41,13 +41,12 @@ export class Vertex {
   }
 
   /**
-   * Returns a generator of free halfedges (i.e. without face) starting from this 
-   * vertex.
+   * Returns a generator of free halfedges starting from this vertex.
    * @param start The halfedge to start, default is vertex halfedge
    */
-  *boundaryHalfedgesOutLoop(start = this.halfedge) {
+  *freeHalfedgesOutLoop(start = this.halfedge) {
     for (const halfedge of this.loopCW(start)) {
-      if (halfedge.face === null) {
+      if (halfedge.isFree()) {
         yield halfedge;
       }
     }
@@ -55,13 +54,38 @@ export class Vertex {
   }
 
   /**
-   * Returns a generator of free halfedges (i.e. without face) arriving to this 
-   * vertex.
+   * Returns a generator of free halfedges arriving to this vertex.
+   * @param start The halfedge to start, default is vertex halfedge
+  */
+  *freeHalfedgesInLoop(start = this.halfedge) {
+    for (const halfedge of this.loopCW(start)) {
+      if (halfedge.twin.isFree()) {
+        yield halfedge.twin;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns a generator of boundary halfedges starting from this vertex.
+   * @param start The halfedge to start, default is vertex halfedge
+   */
+  *boundaryHalfedgesOutLoop(start = this.halfedge) {
+    for (const halfedge of this.loopCW(start)) {
+      if (halfedge.isBoundary()) {
+        yield halfedge;
+      }
+    }
+    return null;
+  }
+  
+  /**
+   * Returns a generator of boundary halfedges arriving to this vertex.
    * @param start The halfedge to start, default is vertex halfedge
   */
   *boundaryHalfedgesInLoop(start = this.halfedge) {
     for (const halfedge of this.loopCW(start)) {
-      if (halfedge.twin.face === null) {
+      if (halfedge.twin.isBoundary()) {
         yield halfedge.twin;
       }
     }
@@ -81,7 +105,7 @@ export class Vertex {
       return true;
     }
     for (const halfEdge of this.loopCW()) {
-      if (halfEdge.face === null) {
+      if (halfEdge.isFree()) {
         return true;
       }
     }

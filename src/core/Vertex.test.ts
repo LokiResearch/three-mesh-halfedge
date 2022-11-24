@@ -117,14 +117,14 @@ test('Vertex loop CCW', () => {
 
 test('Boundary in halfedges loop', () => {
 
-  let array = generatorToArray(v1.boundaryHalfedgesInLoop());
+  let array = generatorToArray(v1.freeHalfedgesInLoop());
   expect(array).toHaveLength(0);
 
   const v1v2 = addEdge(struct, v1, v2);
   const v1v3 = addEdge(struct, v1, v3);
   const v1v4 = addEdge(struct, v1, v4);
 
-  array = generatorToArray(v1.boundaryHalfedgesInLoop());
+  array = generatorToArray(v1.freeHalfedgesInLoop());
   expect(array).toHaveLength(3);
   expect(array).toContain(v1v2.twin);
   expect(array).toContain(v1v3.twin);
@@ -133,7 +133,7 @@ test('Boundary in halfedges loop', () => {
   // Close 1-2-3 triangles
   const v2v3 = addEdge(struct, v2, v3);
   addFace(struct, [v1v2, v2v3, v1v3.twin]);
-  array = generatorToArray(v1.boundaryHalfedgesInLoop());
+  array = generatorToArray(v1.freeHalfedgesInLoop());
   expect(array).toHaveLength(2);
   expect(array).toContain(v1v2.twin);
   expect(array).toContain(v1v4.twin);
@@ -145,20 +145,20 @@ test('Boundary in halfedges loop', () => {
   const v4v2 = addEdge(struct, v4, v2);
   addFace(struct, [v4v2, v1v2.twin, v1v4]);
 
-  array = generatorToArray(v1.boundaryHalfedgesInLoop());
+  array = generatorToArray(v1.freeHalfedgesInLoop());
   expect(array).toHaveLength(0);
 });
 
 test('Boundary out halfedges loop', () => {
 
-  let array = generatorToArray(v1.boundaryHalfedgesOutLoop());
+  let array = generatorToArray(v1.freeHalfedgesOutLoop());
   expect(array).toHaveLength(0);
 
   const v1v2 = addEdge(struct, v1, v2);
   const v1v3 = addEdge(struct, v1, v3);
   const v1v4 = addEdge(struct, v1, v4);
 
-  array = generatorToArray(v1.boundaryHalfedgesOutLoop());
+  array = generatorToArray(v1.freeHalfedgesOutLoop());
   expect(array).toHaveLength(3);
   expect(array).toContain(v1v2);
   expect(array).toContain(v1v3);
@@ -167,7 +167,7 @@ test('Boundary out halfedges loop', () => {
   // Close 1-2-3 triangles
   const v2v3 = addEdge(struct, v2, v3);
   addFace(struct, [v1v2, v2v3, v1v3.twin]);
-  array = generatorToArray(v1.boundaryHalfedgesOutLoop());
+  array = generatorToArray(v1.freeHalfedgesOutLoop());
   expect(array).toHaveLength(2);
   expect(array).toContain(v1v3);
   expect(array).toContain(v1v4);
@@ -179,7 +179,7 @@ test('Boundary out halfedges loop', () => {
   const v4v2 = addEdge(struct, v4, v2);
   addFace(struct, [v4v2, v1v2.twin, v1v4]);
 
-  array = generatorToArray(v1.boundaryHalfedgesOutLoop());
+  array = generatorToArray(v1.freeHalfedgesOutLoop());
   expect(array).toHaveLength(0);
 });
 

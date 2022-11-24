@@ -47,12 +47,20 @@ export class Halfedge {
   }
 
   /**
-   * Indicates whether the halfedge is a boundary (i.e. it has no twin)
+   * Indicates whether the halfedge is free (i.e. no connected face)
    *
    * @type       {boolean}
    */
-  get isBoundary() {
-    return this.face !== null;
+  isFree() {
+    return this.face === null;
+  }
+
+  /**
+   * Indicated wetcher the halfedge is a boundary (i.e. no connected face but
+   * twin has a face)
+   */
+  isBoundary() {
+    return this.face === null && this.twin.face !== null;
   }
 
   /**

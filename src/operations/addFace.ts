@@ -82,7 +82,7 @@ function makeHalfedgesAdjacent(
 
   // Find a boundary halfedge different from out.twin and in 
   let g: Halfedge | null = null; 
-  const loop = halfOut.vertex.boundaryHalfedgesInLoop(halfOut);
+  const loop = halfOut.vertex.freeHalfedgesInLoop(halfOut);
   let he = loop.next();
   while (!g && !he.done) {
     if (he.value !== halfIn) {

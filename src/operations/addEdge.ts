@@ -74,7 +74,7 @@ export function addEdge(
 
 
   // Update refs around v1 if not isolated
-  const in1 = v1.boundaryHalfedgesInLoop().next().value;
+  const in1 = v1.freeHalfedgesInLoop().next().value;
   if (in1) {
     const out1 = in1.next;
     h1.prev = in1;
@@ -87,7 +87,7 @@ export function addEdge(
   }
 
   // Update refs around v2 if not isolated
-  const in2 = v2.boundaryHalfedgesInLoop().next().value;
+  const in2 = v2.freeHalfedgesInLoop().next().value;
   if (in2) {
 
     const out2 = in2.next;
