@@ -31,11 +31,11 @@ import { setFromGeometry } from '../operations/setFromGeometry';
 export class HalfedgeDS {
 
   /** @readonly Faces */
-  readonly faces = new Set<Face>();
+  readonly faces = new Array<Face>();
   /** @readonly Vertices */
-  readonly vertices = new Set<Vertex>();
+  readonly vertices = new Array<Vertex>();
   /** @readonly Halfedges */
-  readonly halfedges = new Set<Halfedge>();
+  readonly halfedges = new Array<Halfedge>();
 
   /**
    * Sets the halfedge structure from a BufferGeometry.

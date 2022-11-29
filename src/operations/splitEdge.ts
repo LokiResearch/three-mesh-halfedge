@@ -23,10 +23,6 @@ export function splitEdge(
     position: Vector3, 
     tolerance = 1e-10) {
 
-  if (!struct.halfedges.has(halfedge)) {
-    throw new Error("Halfedge does not belong to the struct.");
-  }
-
   /**
    * From
    *            A -------------- he -------------> B 
@@ -76,9 +72,9 @@ export function splitEdge(
   twin.prev = newTwin;
 
   // Update structure
-  struct.vertices.add(newVertex);
-  struct.halfedges.add(newHalfedge);
-  struct.halfedges.add(newTwin);
+  struct.vertices.push(newVertex);
+  struct.halfedges.push(newHalfedge);
+  struct.halfedges.push(newTwin);
 
   return newVertex;
 }

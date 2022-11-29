@@ -29,10 +29,6 @@ export function addFace(struct: HalfedgeDS, halfedges: Halfedge[]) {
     const curr = halfedges[i];
     const next = halfedges[(i+1) % size];
 
-    if (!struct.halfedges.has(curr)) {
-      throw new Error("Halfedge does not belong to struct");
-    }
-
     if (curr.face) {
       throw new Error("Halfedge already has a face");
     }
@@ -58,7 +54,7 @@ export function addFace(struct: HalfedgeDS, halfedges: Halfedge[]) {
     halfedge.face = face;
   }
 
-  struct.faces.add(face);
+  struct.faces.push(face);
   return face;
 }
 

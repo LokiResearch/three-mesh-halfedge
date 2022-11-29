@@ -240,11 +240,11 @@ function updateInfo(delta: number) {
   const info = document.getElementById('infoDiv');
   if (info) {
     info.innerHTML = `HalfEdgeDS [build ${delta.toFixed(0)}ms]`;
-    info.innerHTML += `<br>${struct.faces.size} faces`;
+    info.innerHTML += `<br>${struct.faces.length} faces`;
     info.innerHTML += `<br>${struct.loops().length} loops`;
-    info.innerHTML += `<br>${struct.halfedges.size/2} edges`;
-    info.innerHTML += `<br>${struct.halfedges.size} halfedges`;
-    info.innerHTML += `<br>${struct.vertices.size} vertices`;
+    info.innerHTML += `<br>${struct.halfedges.length/2} edges`;
+    info.innerHTML += `<br>${struct.halfedges.length} halfedges`;
+    info.innerHTML += `<br>${struct.vertices.length} vertices`;
   }
 }
 

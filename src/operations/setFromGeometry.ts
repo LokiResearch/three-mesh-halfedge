@@ -69,7 +69,6 @@ export function setFromGeometry(
       if (!v1) {
         pos_.fromBufferAttribute(positions, i1);
         v1 = struct.addVertex(pos_);
-        v1.id = i1;
         vertexMap.set(i1, v1);
       }
 
@@ -79,7 +78,6 @@ export function setFromGeometry(
       if (!v2) {
         pos_.fromBufferAttribute(positions, i2);
         v2 = struct.addVertex(pos_);
-        v2.id = i2;
         vertexMap.set(i2, v2);
       }
 
@@ -99,8 +97,7 @@ export function setFromGeometry(
       loopHalfedges[i] = h1;
     }
 
-    const face = struct.addFace(loopHalfedges);
-    face.id = faceIndex;
+    struct.addFace(loopHalfedges);
   }
 }
 

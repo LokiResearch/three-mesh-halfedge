@@ -33,6 +33,6 @@ export function addVertex(
   
   const v = new Vertex();
   v.position.copy(position);
-  struct.vertices.add(v);
+  struct.vertices.push(v);
   return v;
 }

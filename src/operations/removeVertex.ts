@@ -45,13 +45,9 @@ export function removeVertex(
     vertex: Vertex,
     mergeFaces = true) {
 
-  if (!struct.vertices.has(vertex)) {
-    throw new Error("Vertex does not belong to struct");
-  }
-
   for (const halfedge of vertex.loopCW()) {
     removeEdge(struct, halfedge, mergeFaces);
   }
 
-  struct.vertices.delete(vertex);
+  struct.vertices.remove(vertex);
 }

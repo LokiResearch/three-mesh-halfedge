@@ -19,27 +19,12 @@ const _normal = new Vector3();
 const _triangle = new Triangle();
 const _vec = new Vector3();
 
-let idCount_ = 0;
-
 export class Face {
 
   halfedge: Halfedge;
 
-  private id_: number;
-
   constructor(halfEdge: Halfedge) {
     this.halfedge = halfEdge;
-    this.id_ = idCount_;
-    idCount_++;
-  }
-
-  get id() {
-    return this.id_;
-  }
-  
-  set id(n: number) {
-    this.id_ = n;
-    idCount_ = Math.max(idCount_, n+1);
   }
 
   getNormal(target: Vector3) {

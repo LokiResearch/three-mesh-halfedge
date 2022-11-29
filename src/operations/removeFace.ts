@@ -19,15 +19,12 @@ export function removeFace(
     struct: HalfedgeDS,
     face: Face) {
   
-  if (!struct.faces.has(face)) {
-    throw new Error('Face does not belong to struct');
+  if (!struct.faces.remove(face)) {
+    return;
   }
 
   // Remove face ref from halfedges loop
   for (const halfedge of face.halfedge.nextLoop()) {
     halfedge.face = null;
-  }
-
-  // Remove face from struct
-  struct.faces.delete(face);
+  }  
 }

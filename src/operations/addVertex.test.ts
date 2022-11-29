@@ -23,7 +23,7 @@ const struct = new HalfedgeDS();
 
 beforeEach(() => {
   struct.clear();
-  struct.vertices.add(v1);
+  struct.vertices.push(v1);
 });
 
 test("Add vertex new position", () => {
@@ -31,8 +31,8 @@ test("Add vertex new position", () => {
   position.set(1,2,3);
   const v = struct.addVertex(position);
 
-  expect(struct.vertices.size).toBe(2);
-  expect(struct.vertices.has(v)).toBeTruthy();
+  expect(struct.vertices).toHaveLength(2);
+  expect(struct.vertices.includes(v)).toBeTruthy();
 
 });
 
@@ -42,7 +42,7 @@ describe ("Add vertex existing position", () => {
     position.set(2, 3, 4);
     const v = struct.addVertex(position, true);
 
-    expect(struct.vertices.size).toBe(1);
+    expect(struct.vertices).toHaveLength(1);
     expect(v).toBe(v1);
   });
 
@@ -50,8 +50,8 @@ describe ("Add vertex existing position", () => {
     position.set(2, 3, 4);
     const v = struct.addVertex(position);
 
-    expect(struct.vertices.size).toBe(2);
-    expect(struct.vertices.has(v)).toBeTruthy();
+    expect(struct.vertices).toHaveLength(2);
+    expect(struct.vertices.includes(v)).toBeTruthy();
     expect(v).not.toBe(v1);
   });
 

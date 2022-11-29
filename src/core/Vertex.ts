@@ -15,7 +15,7 @@ import type { Face } from './Face';
 import { Halfedge } from './Halfedge';
 
 const _u = new Vector3();
-let idCount_ = 0;
+let _idCount = 0;
 
 export class Vertex {
   /** Vertex position */
@@ -24,20 +24,11 @@ export class Vertex {
   /** Reference to one halfedge starting from the vertex */
   halfedge: Halfedge | null = null;
 
-  private id_: number;
+  id: number;
 
   constructor() {
-    this.id_ = idCount_;
-    idCount_++;
-  }
-
-  get id() {
-    return this.id_;
-  }
-  
-  set id(n: number) {
-    this.id_ = n;
-    idCount_ = Math.max(idCount_, n+1);
+    this.id = _idCount;
+    _idCount++;
   }
 
   /**

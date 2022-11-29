@@ -30,9 +30,9 @@ function runCommonTests(
   describe("Base Tests", () => {
 
     test('Test sets size', () => {
-      expect(struct.faces.size).toBe(nFace);
-      expect(struct.halfedges.size).toBe(nEdges*2);
-      expect(struct.vertices.size).toBe(nVertices);
+      expect(struct.faces).toHaveLength(nFace);
+      expect(struct.halfedges).toHaveLength(nEdges*2);
+      expect(struct.vertices).toHaveLength(nVertices);
     });
 
     test("Test halfedge prev/next references", () => {

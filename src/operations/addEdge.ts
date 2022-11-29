@@ -22,14 +22,6 @@ export function addEdge(
     v2: Vertex,
     allowParallels = false) {
   
-  if (!struct.vertices.has(v1)) {
-    throw new Error('Vertex v1 does not belong to struct');
-  }
-  
-  if (!struct.vertices.has(v2)) {
-    throw new Error('Vertex v2 does not belong to struct');
-  }
-
   if (v1 === v2) {
     throw new Error('Vertices v1 and v2 should be different');
   }
@@ -100,8 +92,8 @@ export function addEdge(
     v2.halfedge = h2;
   }
 
-  struct.halfedges.add(h1);
-  struct.halfedges.add(h2);
+  struct.halfedges.push(h1);
+  struct.halfedges.push(h2);
 
   return h1;
 }

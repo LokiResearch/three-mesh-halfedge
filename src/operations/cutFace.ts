@@ -24,18 +24,6 @@ export function cutFace(
     v2: Vertex,
     createNewFace = true){
   
-  if (!struct.faces.has(face)) {
-    throw new Error('Face does not belong to struct');
-  }
-
-  if (!struct.vertices.has(v1)) {
-    throw new Error('Vertex v1 does not belong to struct');
-  }
-  
-  if (!struct.vertices.has(v2)) {
-    throw new Error('Vertex v2 does not belong to struct');
-  }
-
   if (v1 === v2) {
     throw new Error('Vertices v1 and v2 should be different');
   }
@@ -131,8 +119,8 @@ export function cutFace(
     v2.halfedge = h2;
   }
 
-  struct.halfedges.add(h1);
-  struct.halfedges.add(h2);
+  struct.halfedges.push(h1);
+  struct.halfedges.push(h2);
 
   // In the case where we connect isolated halfedge (without face) to this face, 
   // We update face ref loop
@@ -160,7 +148,7 @@ export function cutFace(
 
     if (createNewFace) {
       newFace = new Face(h2);
-      struct.faces.add(newFace);
+      struct.faces.push(newFace);
     }
 
     // Update the face ref for each halfedge of the new loop either a new face

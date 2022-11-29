@@ -21,10 +21,6 @@ export function removeEdge(
     halfedge: Halfedge,
     mergeFaces = true) {
   
-  if (!struct.halfedges.has(halfedge)) {
-    throw new Error('Halfedge does not belong to struct');
-  }
-
   /*
    *      ↖           ↙
    *        ↖       ↙
@@ -82,7 +78,7 @@ export function removeEdge(
   }
 
   // Remove halfedges from struct
-  struct.halfedges.delete(halfedge);
-  struct.halfedges.delete(twin);
+  struct.halfedges.remove(halfedge);
+  struct.halfedges.remove(twin);
 
 }
