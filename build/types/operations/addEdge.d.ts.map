@@ -1,0 +1,1 @@
+{"version":3,"file":"addEdge.d.ts","sourceRoot":"","sources":["../../src/operations/addEdge.ts"],"names":[],"mappings":"AAcA,OAAO,EAAE,QAAQ,EAAE,MAAM,kBAAkB,CAAC;AAC5C,OAAO,EAAE,UAAU,EAAE,MAAM,oBAAoB,CAAC;AAChD,OAAO,EAAE,MAAM,EAAE,MAAM,gBAAgB,CAAC;AAExC,wBAAgB,OAAO,CACnB,MAAM,EAAE,UAAU,EAClB,EAAE,EAAE,MAAM,EACV,EAAE,EAAE,MAAM,EACV,cAAc,UAAQ,YA4EzB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"addVertex.d.ts","sourceRoot":"","sources":["../../src/operations/addVertex.ts"],"names":[],"mappings":"AAcA,OAAO,EAAE,OAAO,EAAE,MAAM,OAAO,CAAC;AAChC,OAAO,EAAE,UAAU,EAAE,MAAM,oBAAoB,CAAC;AAChD,OAAO,EAAE,MAAM,EAAE,MAAM,gBAAgB,CAAC;AAExC,wBAAgB,SAAS,CACrB,MAAM,EAAE,UAAU,EAClB,QAAQ,EAAE,OAAO,EACjB,eAAe,UAAQ,EACvB,SAAS,SAAQ,UAepB"}
